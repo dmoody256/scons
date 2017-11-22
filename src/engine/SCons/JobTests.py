@@ -37,7 +37,7 @@ import SCons.Job
 num_sines = 10000
 
 # how many parallel jobs to perform for the test
-num_jobs = 11
+num_jobs = 155
 
 # how many tasks to perform for the test
 num_tasks = num_jobs*5
@@ -200,7 +200,7 @@ class Taskmaster(object):
     def tasks_were_serial(self):
         "analyze the task order to see if they were serial"
         serial = 1 # assume the tasks were serial
-        for i in range(num_tasks):
+        for i in range(self.num_tasks):
             serial = serial and (self.begin_list[i]
                                  == self.end_list[i]
                                  == (i + 1))
