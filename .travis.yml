@@ -2,7 +2,7 @@ dist: trusty
 before_install:
   - sudo add-apt-repository ppa:deadsnakes/ppa
   - sudo apt-get update
-  - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python3.5 python3-pip python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
+  - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python3.5 python3-pip python-virtualenv python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
   - sudo pip install lxml
   - sudo pip3 install lxml
   - sudo wget http://master.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
@@ -18,9 +18,16 @@ before_install:
 matrix:
   include:
     - python: '3.5' # this is not strictly necessary
-      env: PYTHONCOM=/usr/bin/python3.5
+      env: 
+        - PYTHONCOM=python3.5
+        - PIPCOM=pip3
     - python: '2.7'
-      env: PYTHONCOM=/usr/bin/python
+      env: 
+        - PYTHONCOM=python
+        - PIPCOM=pip
 
 script: 
-  - $PYTHONCOM runtest.py -a || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
+  - /usr/bin/$PYTHONCOM src/script/scons.py
+  - virtualenv --clear -q -p $PYTHONCOM venv
+  - ./venv/bin/$PIPCOM install scons-$(cat ReleaseConfig | grep -e '^version_tuple' | sed 's/[^0-9.]*\([0-9.]\),\s\([0-9.]\),\s\([0-9.]\).*/\1.\2.\3/').alpha.yyyymmdd.tar.gz -f ./build/dist --no-index -U
+  - /usr/bin/$PYTHONCOM runtest.py -a || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
