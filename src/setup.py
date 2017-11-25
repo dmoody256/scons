@@ -86,8 +86,8 @@ import distutils.msvccompiler
 # more info here:
 # https://groups.google.com/forum/#!topic/pypa-dev/oHYN8ubWE8k
 with_setuptools = False
-if( 'USE_SETUPTOOLS' in os.environ 
-    or os.path.basename(os.path.dirname(__file__)).startswith('pip-‌​') 
+if( 'USE_SETUPTOOLS' in os.environ
+    or os.path.basename(os.path.dirname(__file__)).startswith('pip-')
     or '--single-version-externally-managed' in sys.argv):
     try:
         from setuptools import setup
