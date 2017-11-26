@@ -141,10 +141,15 @@ class MyTestSCons(TestSCons.TestSCons):
 
     def lib_line(self, lib):
         for line in self.stdout_lines():
-            print("line = " + line + "\nlib = " + lib)
             if('Installed SCons library modules into ' in line ):
                 libdir_match = re.search('into\s(.*)' + lib, line)
                 self.install_libdir = libdir_match.group(1)
+                return True
+        return False
+
+    def pip_lib_line(self):
+        for line in self.stdout_lines():
+            if('Successfully installed scons' in line ):
                 return True
         return False
 
@@ -360,11 +365,9 @@ test.fail_test(test.stderr().find("you'll have to change the search path yoursel
 test.remove(test.prefix)
 
 # test that pip installs
-args1 = 'install ' + os.path.abspath(tar_gz) + ' -f ' + os.path.dirname(os.path.abspath(tar_gz)) + ' --no-index -U --root=%s' % test.root
-print(args1)
+
 test.runPip(arguments = 'install ' + os.path.abspath(tar_gz) + ' -f ' + os.path.dirname(os.path.abspath(tar_gz)) + ' --no-index -U --root=%s' % test.root)
-test.fail_test(not test.lib_line(test.version_lib))
-test.must_have_installed([test.install_libdir + test.version_lib])
+test.fail_test(not test.pip_lib_line())
 
 # All done.
 test.pass_test()
