@@ -94,8 +94,7 @@ class MyTestSCons(TestSCons.TestSCons):
             self.bin_dir = os.path.join('Scripts')
             self.bat_dir = self.prefix
             self.standalone_lib = os.path.join('scons')
-            self.standard_lib = os.path.join('dist-packages',
-                                             '')
+            self.standard_lib = ""
             self.version_lib = scons_version
             self.man_dir = os.path.join('Doc')
         else:
@@ -103,9 +102,7 @@ class MyTestSCons(TestSCons.TestSCons):
             self.bat_dir = self.bin_dir
             self.lib_dir = os.path.join('lib')
             self.standalone_lib = os.path.join('scons')
-            self.standard_lib = os.path.join('python%s' % sys.version[:3],
-                                             'dist-packages',
-                                             '')
+            self.standard_lib = ""
             self.version_lib = scons_version
             self.man_dir = os.path.join('man', 'man1')
 
