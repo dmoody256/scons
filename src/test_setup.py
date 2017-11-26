@@ -132,7 +132,7 @@ class MyTestSCons(TestSCons.TestSCons):
         try: shutil.rmtree(dir)
         except (OSError, WindowsError): pass
         if os.path.isdir(dir):
-            raise Exception("Dir was not actually deleted")
+            raise Exception("Dir " + dir + " was not actually deleted")
 
     def stdout_lines(self):
         return self.stdout().split('\n')
@@ -141,7 +141,6 @@ class MyTestSCons(TestSCons.TestSCons):
     def lib_line(self, lib):
         for line in self.stdout_lines():
             if('Installed SCons library modules into ' in line ):
-                print("line = " + line + "\nlib = " + lib)
                 libdir_match = re.search('into\s(.*)' + lib, line)
                 self.install_libdir = libdir_match.group(1)
                 return True
@@ -160,7 +159,6 @@ class MyTestSCons(TestSCons.TestSCons):
         for line in self.stdout_lines():
             if('Installed SCons scripts into ' in line ):
                 bindir_match = re.search('into\s(.*)' + self.bin_dir, line)
-                print("script = " + line)
                 self.install_bindir = bindir_match.group(1) + self.bin_dir + os.path.sep
                 return True
         return False
