@@ -125,6 +125,9 @@ class MyTestSCons(TestSCons.TestSCons):
             kw['program'] = self.where_is("pip3")
         else:
             kw['program'] = self.where_is("pip")
+        if(kw['program'] == None):
+            print("Cannot pip not installed, throwing no result.")
+            test.no_result(2)
         kw['stderr'] = None
         return TestSCons.TestSCons.run(self, *args, **kw)
 
@@ -138,6 +141,7 @@ class MyTestSCons(TestSCons.TestSCons):
 
     def lib_line(self, lib):
         for line in self.stdout_lines():
+            print("line = " + line + "\nlib = " + lib)
             if('Installed SCons library modules into ' in line ):
                 libdir_match = re.search('into\s(.*)' + lib, line)
                 self.install_libdir = libdir_match.group(1)
@@ -356,6 +360,8 @@ test.fail_test(test.stderr().find("you'll have to change the search path yoursel
 test.remove(test.prefix)
 
 # test that pip installs
+args1 = 'install ' + os.path.abspath(tar_gz) + ' -f ' + os.path.dirname(os.path.abspath(tar_gz)) + ' --no-index -U --root=%s' % test.root
+print(args1)
 test.runPip(arguments = 'install ' + os.path.abspath(tar_gz) + ' -f ' + os.path.dirname(os.path.abspath(tar_gz)) + ' --no-index -U --root=%s' % test.root)
 test.fail_test(not test.lib_line(test.version_lib))
 test.must_have_installed([test.install_libdir + test.version_lib])
