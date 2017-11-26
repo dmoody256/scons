@@ -129,8 +129,7 @@ class MyTestSCons(TestSCons.TestSCons):
         return TestSCons.TestSCons.run(self, *args, **kw)
 
     def remove(self, dir):
-        try: shutil.rmtree(dir)
-        except (OSError, WindowsError): pass
+        shutil.rmtree(dir)
 
     def stdout_lines(self):
         return self.stdout().split('\n')
