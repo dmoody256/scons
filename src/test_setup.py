@@ -142,6 +142,7 @@ class MyTestSCons(TestSCons.TestSCons):
     def lib_line(self, lib):
         for line in self.stdout_lines():
             if('Installed SCons library modules into ' in line ):
+                print("line = " + line + "\nlib = " + lib)
                 libdir_match = re.search('into\s(.*)' + lib, line)
                 self.install_libdir = libdir_match.group(1)
                 return True
