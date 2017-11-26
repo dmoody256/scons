@@ -187,7 +187,7 @@ class MyTestSCons(TestSCons.TestSCons):
         scripts = self._bat_scripts + self._bat_version_scripts
         paths = []
         for script in scripts:
-            paths += [self.bat_dir + os.path.sep + script]
+            paths += [self.install_bindir + os.path.sep + script]
         return paths
 
     def man_page_line(self):
