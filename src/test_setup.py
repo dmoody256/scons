@@ -158,6 +158,7 @@ class MyTestSCons(TestSCons.TestSCons):
         for line in self.stdout_lines():
             if('Installed SCons scripts into ' in line ):
                 bindir_match = re.search('into\s(.*)' + self.bin_dir, line)
+                print("script = " + line)
                 self.install_bindir = bindir_match.group(1) + self.bin_dir + os.path.sep
                 return True
         return False
@@ -165,20 +166,26 @@ class MyTestSCons(TestSCons.TestSCons):
     def base_script_paths(self):
         paths = []
         for script in self._base_scripts:
-            paths += [self.install_bindir + script]
+            win32_ext = ""
+            if sys.platform == 'win32':
+                win32_ext = ".py"
+            paths += [self.install_bindir + script + win32_ext]
         return paths
 
     def version_script_paths(self):
         paths = []
         for script in self._version_scripts:
-            paths += [self.install_bindir + script]
+            win32_ext = ""
+            if sys.platform == 'win32':
+                win32_ext = ".py"
+            paths += [self.install_bindir + script + win32_ext]
         return paths
 
     def bat_script_paths(self):
         scripts = self._bat_scripts + self._bat_version_scripts
         paths = []
         for script in scripts:
-            paths += [self.install_bindir + script]
+            paths += [self.bat_dir + os.path.sep + script]
         return paths
 
     def man_page_line(self):
@@ -363,8 +370,10 @@ test.fail_test(test.stderr().find("you'll have to change the search path yoursel
 test.remove(test.prefix)
 
 # test that pip installs
-
-test.runPip(arguments = 'install ' + os.path.abspath(tar_gz) + ' -f ' + os.path.dirname(os.path.abspath(tar_gz)) + ' --no-index -U --root=%s' % test.root)
+package_file = tar_gz
+if sys.platform == "win32":
+    package_file = zip
+test.runPip(arguments = 'install ' + os.path.abspath(package_file) + ' -f ' + os.path.dirname(os.path.abspath(package_file)) + ' --no-index -U --root=%s' % test.root)
 test.fail_test(not test.pip_lib_line())
 
 # All done.
