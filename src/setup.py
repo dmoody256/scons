@@ -521,7 +521,7 @@ arguments = {
                                             'docbook-xsl-1.76.1/xhtml/*',
                                             'docbook-xsl-1.76.1/xhtml-1_1/*',
                                             'utils/*']},
-    'data_files': [('man/man1', man_pages)],
+    'data_files': [('man/man1', ['../build/doc/man/' + man_page for man_page in man_pages])],
     'scripts': scripts,
     'cmdclass': {'install': install,
                  'install_lib': install_lib,
