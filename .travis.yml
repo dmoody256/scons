@@ -18,16 +18,11 @@ before_install:
 matrix:
   include:
     - python: '3.5' # this is not strictly necessary
-      env: 
-        - PYTHONCOM=python3.5
-        - PIPCOM=pip3
+      env: PYTHONCOM=python3.5
     - python: '2.7'
-      env: 
-        - PYTHONCOM=python
-        - PIPCOM=pip
+      env: PYTHONCOM=python
 
 script: 
   - /usr/bin/$PYTHONCOM src/script/scons.py
-  - virtualenv --clear -q -p $PYTHONCOM venv
-  - ./venv/bin/$PIPCOM install build/dist/scons-$(cat ReleaseConfig | grep -e '^version_tuple' | sed 's/[^0-9.]*\([0-9.]\),\s\([0-9.]\),\s\([0-9.]\).*/\1.\2.\3/').alpha.yyyymmdd.tar.gz -f ./build/dist --no-index -U
+  - /usr/bin/$PYTHONCOM runtest.py src/test_setup.py
   - /usr/bin/$PYTHONCOM runtest.py -a || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
