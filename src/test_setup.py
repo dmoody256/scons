@@ -129,7 +129,10 @@ class MyTestSCons(TestSCons.TestSCons):
         return TestSCons.TestSCons.run(self, *args, **kw)
 
     def remove(self, dir):
-        shutil.rmtree(dir)
+        try: shutil.rmtree(dir)
+        except (OSError, WindowsError): pass
+        if os.path.isdir(dir):
+            raise Exception("Dir was not actually deleted")
 
     def stdout_lines(self):
         return self.stdout().split('\n')
