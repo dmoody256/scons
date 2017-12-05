@@ -704,7 +704,7 @@ class SConfBase(object):
             else:
                 _ac_config_logs[self.logfile] = None
                 log_mode = "w"
-            fp = open(str(self.logfile), log_mode)
+            fp = open(str(self.logfile.path), log_mode)
             self.logstream = SCons.Util.Unbuffered(fp)
             # logfile may stay in a build directory, so we tell
             # the build system not to override it with a eventually
