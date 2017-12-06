@@ -15,6 +15,7 @@ before_install:
   - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make -j$(nproc) && sudo make install && cd ..
 # for ipkg test
   - wget https://launchpad.net/~rzr/+archive/ubuntu/ppa/+files/ipkg-utils_050831-0ubuntu0~rzr13_amd64.deb
+  - sudo dpkg -i ipkg-utils_050831-0ubuntu0~rzr13_amd64.deb
 
 script: 
   - python runtest.py -a || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
