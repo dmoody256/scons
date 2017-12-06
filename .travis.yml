@@ -1,5 +1,5 @@
 dist: trusty
-# test5
+# test6
 
 script: 
   - python runtest.py src/engine/SCons/JobTests.py || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
