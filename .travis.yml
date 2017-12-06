@@ -1,6 +1,8 @@
 dist: trusty
 before_install:
-  - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
+  - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev 
+  - sudo apt-get -y python-pip python-dev fop docbook-xsl-doc-pdf texlive-full 
+  - sudo apt-get -y biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
   - sudo pip install lxml
   - sudo wget http://master.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
   - wget -qO - https://dlang.org/d-keyring.gpg | sudo apt-key add -
@@ -10,7 +12,9 @@ before_install:
   - sudo cp -rf ldc2-1.4.0-linux-x86_64/* /
   - wget https://github.com/swig/swig/archive/rel-3.0.12.tar.gz
   - tar xzf rel-3.0.12.tar.gz
-  - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install && cd ..
+  - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make -j$(nproc) && sudo make install && cd ..
+# for ipkg test
+  - wget https://launchpad.net/~rzr/+archive/ubuntu/ppa/+files/ipkg-utils_050831-0ubuntu0~rzr13_amd64.deb
 
 script: 
   - python runtest.py -a || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
