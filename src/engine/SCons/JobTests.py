@@ -56,7 +56,7 @@ num_sines = 10000
 
 # how many parallel jobs to perform for the test
 num_jobs = get_cpu_nums()*2
-
+print("num_jobs = " + str(num_jobs))
 # in case we werent able to detect num cpus for this test
 # just make a hardcoded suffcient large number, though not future proof
 if(num_jobs == 2):
