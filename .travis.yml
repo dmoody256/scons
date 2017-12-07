@@ -1,5 +1,5 @@
 dist: trusty
-# test11
+# test12
 
 script: 
   - python runtest.py -f tests.txt || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
