@@ -2,4 +2,4 @@ dist: trusty
 # test9
 
 script: 
-  - python runtest.py src/engine/SCons/JobTests.py || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
+  - python runtest.py -f tests.txt || if [[ $? == 2 ]]; then exit 0; else exit 1; fi

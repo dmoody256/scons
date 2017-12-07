@@ -1,0 +1,8 @@
+src/engine/SCons/ActionTests.py
+src/engine/SCons/BuilderTests.py
+src/engine/SCons/CacheDirTests.py
+src/engine/SCons/DefaultsTests.py
+src/engine/SCons/EnvironmentTests.py
+src/engine/SCons/ErrorsTests.py
+src/engine/SCons/ExecutorTests.py
+src/engine/SCons/JobTests.py
