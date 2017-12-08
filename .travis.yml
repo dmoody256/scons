@@ -2,6 +2,6 @@ dist: trusty
 # test12
 
 script: 
-  - travis_retry python runtest.py src/engine/SCons/JobTests.py
+  - travis_retry --retry 10 python runtest.py src/engine/SCons/JobTests.py
   - echo "src/engine/SCons/JobTests.py" > exclude.test
   - python runtest.py -a --exclude-list exclude.test || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
