@@ -2,6 +2,6 @@ dist: trusty
 # test12
 
 script: 
-  - n=0; while [[ $n -lt 10 ]]; do python runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [[ n == 10 ]]; then exit 0; fi
+  - n=0; while [[ $n -lt 10 ]]; do python runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [[ n == 10 ]]; then exit 1; fi
   - echo "src/engine/SCons/JobTests.py" > exclude.test
   - python runtest.py -a --exclude-list exclude.test || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
