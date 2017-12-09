@@ -16,6 +16,8 @@ script:
   - echo "source = $PWD/src" >> .coveragerc
   - echo "parallel = True" >> .coveragerc
   - coverage run --rcfile=$PWD/.coveragerc runtest.py test/Java || if [[ $? == 2 ]]; then exit 0; else exit 1; fi
+
+after_success:
   - coverage combine
   - coverage report
   - coveralls --rcfile=$PWD/.coveragerc
