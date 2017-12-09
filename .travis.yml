@@ -41,8 +41,8 @@ script:
 # exclude JobTest.py becuase we already ran that
   - echo "src/engine/SCons/JobTests.py" > exclude_jobtest
   - python runtest.py -l -a --exclude-list exclude_jobtest > all_tests
-  - let "start = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * (${BUILD_JOB_NUM} - 1)"
-  - let "end = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * ${BUILD_JOB_NUM} )"
+  - let "start = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * (${BUILD_JOB_NUM} - 1)"; true;
+  - let "end = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * ${BUILD_JOB_NUM}"
   - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
   - sed -n ${start},${end}p all_tests > build_tests
   - coverage run --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
