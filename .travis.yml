@@ -2,6 +2,7 @@ dist: trusty
 before_install:
   - sudo apt-get -y install clang python-pip python-dev build-essential libpcre3-dev autoconf automake libtool bison subversion git
   - sudo pip install lxml
+  - wget https://github.com/swig/swig/archive/rel-3.0.12.tar.gz
   - tar xzf rel-3.0.12.tar.gz
   - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install && cd ..
   - sudo pip install coverage
