@@ -15,7 +15,7 @@ script:
   - echo "[run]" >> .coveragerc
   - echo "source = $PWD/src" >> .coveragerc
   - echo "parallel = True" >> .coveragerc
-  - coverage run --rcfile=$PWD/.coveragerc runtest.py test/Java || if [[ $? == 2 ]]; then travis_terminate 0; else travis_terminate 1; fi
+  - coverage run --rcfile=$PWD/.coveragerc runtest.py test/Java || if [[ $? == 2 ]]; then true; else false; fi
 
 after_success:
   - coverage combine
