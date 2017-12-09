@@ -44,6 +44,7 @@ script:
   - let "start = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * (${BUILD_JOB_NUM} - 1)"; true;
   - let "end = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * ${BUILD_JOB_NUM}"
   - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
+  - if (( ${start} == 0 )); then start=1; fi
   - sed -n ${start},${end}p all_tests > build_tests
   - coverage run --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
 
