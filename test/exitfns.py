@@ -64,7 +64,7 @@ def f():
 
 sys.exitfunc = f
 """ + sconstruct)
-
+expected_output = test.wrap_stdout("scons: `.' is up to date.\n")
 test.run(arguments='-f SConstruct .', stdout = expected_output)
 
 test.pass_test()
