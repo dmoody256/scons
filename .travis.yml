@@ -1,5 +1,9 @@
 dist: trusty
 
+stage:
+  - Test
+  - Coverage
+
 jobs:
   include:
     - stage: Test
