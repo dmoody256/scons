@@ -11,10 +11,7 @@ matrix:
     - env: BUILD_JOB_NUM=7
     - env: BUILD_JOB_NUM=8
 
-jobs:
-  include:
-    - stage: plaintest
-      script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
+
 
 before_install:
   - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
@@ -60,3 +57,8 @@ after_success:
   - coverage combine
   - coverage report
   - coveralls --rcfile=$PWD/.coveragerc
+
+jobs:
+  include:
+    - stage: plaintest
+      script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
