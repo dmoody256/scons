@@ -1,31 +1,32 @@
 dist: trusty
-jobs:
-  include:
-    stage: Test
-    script: 
-      - n=0; while [[ $n -lt 10 ]]; do python runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [ "$n" -gt "9" ]; then false; fi
-      - echo "src/engine/SCons/JobTests.py" > exclude_jobtest
-      - python runtest.py -a --exclude-list exclude_jobtest || if [[ $? == 2 ]]; then true; else false; fi
-    before_script: skip
-    after_success: skip
+
+install:
+  - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
+  - sudo pip install lxml
+  - sudo wget http://master.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
+  - wget -qO - https://dlang.org/d-keyring.gpg | sudo apt-key add -
+  - sudo apt-get update && sudo apt-get -y --allow-unauthenticated install dmd-bin 
+  - wget https://github.com/ldc-developers/ldc/releases/download/v1.4.0/ldc2-1.4.0-linux-x86_64.tar.xz
+  - tar xf ldc2-1.4.0-linux-x86_64.tar.xz
+  - sudo cp -rf ldc2-1.4.0-linux-x86_64/* /
+  - wget https://github.com/swig/swig/archive/rel-3.0.12.tar.gz
+  - tar xzf rel-3.0.12.tar.gz
+  - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install && cd ..
 
 jobs:
   include:
+    - &test_job
+      stage: Test
+      script: 
+        - n=0; while [[ $n -lt 10 ]]; do python runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [ "$n" -gt "9" ]; then false; fi
+        - echo "src/engine/SCons/JobTests.py" > exclude_jobtest
+        - python runtest.py -a --exclude-list exclude_jobtest || if [[ $? == 2 ]]; then true; else false; fi
+      before_script: skip
+      after_success: skip
+
     - &coverage_jobs
       stage: Coverage
-      install:
-        - sudo apt-get -y install clang gdc docbook-xml xsltproc libxml2-dev libxslt-dev python-pip python-dev fop docbook-xsl-doc-pdf texlive-full biber texmaker build-essential libpcre3-dev autoconf automake libtool bison subversion git
-        - sudo pip install lxml
-        - sudo wget http://master.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
-        - wget -qO - https://dlang.org/d-keyring.gpg | sudo apt-key add -
-        - sudo apt-get update && sudo apt-get -y --allow-unauthenticated install dmd-bin 
-        - wget https://github.com/ldc-developers/ldc/releases/download/v1.4.0/ldc2-1.4.0-linux-x86_64.tar.xz
-        - tar xf ldc2-1.4.0-linux-x86_64.tar.xz
-        - sudo cp -rf ldc2-1.4.0-linux-x86_64/* /
-        - wget https://github.com/swig/swig/archive/rel-3.0.12.tar.gz
-        - tar xzf rel-3.0.12.tar.gz
-        - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install && cd ..
-
+      
       before_script:
         - sudo pip install coverage
         - sudo pip install coveralls
