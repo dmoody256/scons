@@ -1,0 +1,3 @@
+build: off
+build_script:
+  - cmd: python runtest.py -a
