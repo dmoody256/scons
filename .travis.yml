@@ -19,25 +19,22 @@ before_install:
   - echo "coverage.process_startup()" | sudo tee --append /usr/lib/python2.7/sitecustomize.py 
 
 
-after_success:
-  - coverage combine
-  - coverage report
-  - coveralls --rcfile=$PWD/.coveragerc
+
+
+matrix:
+  include:
+    - env: BUILD_JOB_NUM=1
+    - env: BUILD_JOB_NUM=2
+    - env: BUILD_JOB_NUM=3
+    - env: BUILD_JOB_NUM=4
+    - env: BUILD_JOB_NUM=5
+    - env: BUILD_JOB_NUM=6
+    - env: BUILD_JOB_NUM=7
+    - env: BUILD_JOB_NUM=8
 
 jobs:
   include:
     - stage: coverage
-      matrix:
-        include:
-          - env: BUILD_JOB_NUM=1
-          - env: BUILD_JOB_NUM=2
-          - env: BUILD_JOB_NUM=3
-          - env: BUILD_JOB_NUM=4
-          - env: BUILD_JOB_NUM=5
-          - env: BUILD_JOB_NUM=6
-          - env: BUILD_JOB_NUM=7
-          - env: BUILD_JOB_NUM=8
-
       script: 
         - export TOTAL_BUILD_JOBS=8
         - export COVERAGE_PROCESS_START=$PWD/.coveragerc
@@ -60,6 +57,10 @@ jobs:
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
         - coverage run --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
-
+      after_success:
+        - coverage combine
+        - coverage report
+        - coveralls --rcfile=$PWD/.coveragerc
     - stage: plaintest
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
+      env: 
