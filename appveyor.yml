@@ -13,7 +13,7 @@ environment:
 build: off
 build_script:
   - ps: >-
-      python runtest.py -l -a > all_tests.txt
+      python runtest.py -l -a | Out-File all_tests.txt
       $TOTAL_BUILD_JOBS = 8
       $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines
       $start = ($Lines / $TOTAL_BUILD_JOBS) * ($BUILD_JOB_NUM - 1)
@@ -24,7 +24,7 @@ build_script:
       if ( $start == 0 ){
         $start = 1
       }
-      get-content all_tests.txt | select -first $start -last $end > build_tests.txt
+      get-content all_tests.txt | select -first $start -last $end  | Out-File build_tests.txt
       python runtest.py -f build_tests.txt 
       if( $lastexitcode == 2 ) { $lastexitcode = 0 }
   
