@@ -1,4 +1,29 @@
+
+environment:
+  matrix:
+    - BUILD_JOB_NUM: 1
+    - BUILD_JOB_NUM: 2
+    - BUILD_JOB_NUM: 3
+    - BUILD_JOB_NUM: 4
+    - BUILD_JOB_NUM: 5
+    - BUILD_JOB_NUM: 6
+    - BUILD_JOB_NUM: 7
+    - BUILD_JOB_NUM: 8
+
 build: off
 build_script:
-  - cmd: python runtest.py -a && if errorlevel 2 ( set errorlevel=0 )
+  - ps: >-
+      python runtest.py -l -a > all_tests.txt
+      $TOTAL_BUILD_JOBS = 8
+      $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines
+      $start = ($Lines / $TOTAL_BUILD_JOBS) * ($BUILD_JOB_NUM - 1)
+      $end = ($Lines / $TOTAL_BUILD_JOBS) * $BUILD_JOB_NUM
+      if($BUILD_JOB_NUM == $TOTAL_BUILD_JOBS){
+        $end = $Lines
+      }
+      if ( $start == 0 ){
+        $start = 1
+      }
+      get-content all_tests.txt | select -first $start -last $end > build_tests.txt
+      python runtest.py -f build_tests.txt && if( $lastexitcode == 2 ) { $lastexitcode = 0 }
   
