@@ -12,6 +12,15 @@ SCons - a software construction tool
 .. image:: https://img.shields.io/sourceforge/dt/scons.svg
    :target: https://sourceforge.net/projects/scons
    :alt: Sourceforge Total Downloads
+   
+.. image:: https://travis-ci.org/SCons/scons.svg?branch=master
+   :target: https://travis-ci.org/SCons/scons
+   :alt: Travis CI build status
+   
+.. image:: https://coveralls.io/repos/github/SCons/scons/badge.svg
+   :target: https://coveralls.io/github/SCons/scons
+   :alt: Coveralls.io Coverage Status
+
 
 Welcome to the SCons development tree.  The real purpose of this tree is to
 package SCons for production distribution in a variety of formats, not just to
