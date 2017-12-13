@@ -13,8 +13,7 @@ environment:
 build: off
 build_script:
   - ps: >-
-      $output = cmd /c python runtest.py -l -a 
-      $output | Out-File all_tests.txt
+      cmd /c python runtest.py -l -a `>all_tests.txt 2`>`&1
       $TOTAL_BUILD_JOBS = 8
       $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines
       $start = ($Lines / $TOTAL_BUILD_JOBS) * ($BUILD_JOB_NUM - 1)
