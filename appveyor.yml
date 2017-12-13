@@ -25,6 +25,7 @@ build_script:
         $start = 1
       }
       get-content all_tests.txt | select -first $start -last $end  | Out-File build_tests.txt
+  - ps: >-
       & ".\runtest.py" -myArgument "-f build_tests.txt"
       if( $lastexitcode == 2 ) { $lastexitcode = 0 }
   
