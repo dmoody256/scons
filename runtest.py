@@ -368,7 +368,7 @@ if not suppress_stdout and not suppress_stderr:
     # write its stuff freely to stdout/stderr.
     def spawn_it(command_args):
         print( str(command_args))
-        p = subprocess.Popen(str(' '.join(command_args)),
+        p = subprocess.Popen(' '.join(command_args),
                              shell=True)
         return (None, None, p.wait())
 else:
