@@ -12,4 +12,4 @@ environment:
 
 build: off
 build_script:
-  - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 8; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first $start -last $end  | Out-File build_tests.txt}" & python runtest.py -f build_tests.txt
+  - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 8; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first $start -last $end  | Out-File build_tests.txt}" & type build_tests.txt & python runtest.py -f build_tests.txt
