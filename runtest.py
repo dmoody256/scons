@@ -692,7 +692,7 @@ def find_py(directory):
 
 
 if testlistfile:
-    tests = open(testlistfile, 'r', encoding="utf-8").readlines()
+    #tests = open(testlistfile, 'r', encoding="utf-8").readlines()
     tests = io.open(testlistfile, 'r', ).readlines()
     tests = [x for x in tests if x[0] != '#']
     tests = [x[:-1] for x in tests]
