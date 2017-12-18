@@ -302,7 +302,7 @@ class Unbuffered(object):
         self.file = file
         self.softspace = 0  ## backward compatibility; not supported in Py3k
     def write(self, arg):
-        self.file.write(arg.encode('latin-1'))
+        self.file.write(arg)
         self.file.flush()
     def __getattr__(self, attr):
         return getattr(self.file, attr)
@@ -693,7 +693,7 @@ def find_py(directory):
 
 if testlistfile:
     #tests = open(testlistfile, 'r', encoding="utf-8").readlines()
-    tests = io.open(testlistfile, 'r', ).readlines()
+    tests = io.open(testlistfile, 'r', encoding="utf-8").readlines()
     tests = [x for x in tests if x[0] != '#']
     tests = [x[:-1] for x in tests]
     tests = [x.strip() for x in tests]
