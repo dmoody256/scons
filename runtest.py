@@ -91,7 +91,7 @@ import re
 import stat
 import sys
 import time
-import io
+import codecs
 
 try:
     import threading
@@ -367,8 +367,8 @@ if not suppress_stdout and not suppress_stderr:
     # Without any output suppressed, we let the subprocess
     # write its stuff freely to stdout/stderr.
     def spawn_it(command_args):
-        print( str(command_args).encode('latin-1'))
-        p = subprocess.Popen(u' '.join(command_args).encode('latin-1'), 
+        print( str(command_args))
+        p = subprocess.Popen(' '.join(command_args), 
                                      shell=True)
         return (None, None, p.wait())
 else:
@@ -692,8 +692,7 @@ def find_py(directory):
 
 
 if testlistfile:
-    #tests = open(testlistfile, 'r', encoding="utf-8").readlines()
-    tests = io.open(testlistfile, 'r', encoding="utf-8").readlines()
+    tests = codecs.open(testlistfile, 'r', encoding='utf-8').readlines()
     tests = [x for x in tests if x[0] != '#']
     tests = [x[:-1] for x in tests]
     tests = [x.strip() for x in tests]
