@@ -302,7 +302,7 @@ class Unbuffered(object):
         self.file = file
         self.softspace = 0  ## backward compatibility; not supported in Py3k
     def write(self, arg):
-        self.file.write(arg)
+        self.file.write(arg.encode('latin-1'))
         self.file.flush()
     def __getattr__(self, attr):
         return getattr(self.file, attr)
