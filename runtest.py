@@ -91,7 +91,6 @@ import re
 import stat
 import sys
 import time
-import codecs
 
 try:
     import threading
@@ -692,7 +691,7 @@ def find_py(directory):
 
 
 if testlistfile:
-    tests = codecs.open(testlistfile, 'r', encoding='utf-8').readlines()
+    tests = open(testlistfile, 'r').readlines()
     tests = [x for x in tests if x[0] != '#']
     tests = [x[:-1] for x in tests]
     tests = [x.strip() for x in tests]
