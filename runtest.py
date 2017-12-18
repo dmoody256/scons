@@ -302,7 +302,7 @@ class Unbuffered(object):
         self.file = file
         self.softspace = 0  ## backward compatibility; not supported in Py3k
     def write(self, arg):
-        self.file.write(arg.encode('utf-8'))
+        self.file.write(arg.encode('latin-1'))
         self.file.flush()
     def __getattr__(self, attr):
         return getattr(self.file, attr)
@@ -368,7 +368,7 @@ if not suppress_stdout and not suppress_stderr:
     # write its stuff freely to stdout/stderr.
     def spawn_it(command_args):
         print( str(command_args).encode('latin-1'))
-        p = subprocess.Popen(' '.join(command_args).encode('latin-1'), 
+        p = subprocess.Popen(u' '.join(command_args).encode('latin-1'), 
                                      shell=True)
         return (None, None, p.wait())
 else:
