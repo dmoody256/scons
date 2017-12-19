@@ -13,6 +13,10 @@ install:
   - tar xzf rel-3.0.12.tar.gz
   - cd swig-rel-3.0.12 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install && cd ..
 
+matrix:
+  allow_failures:
+    - python: 3.5
+    - python: 3.6
 
 jobs:
   include:
@@ -24,9 +28,6 @@ jobs:
         - python runtest.py -a --exclude-list exclude_jobtest || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
-      allow_failures:
-        - python: 3.5
-        - python: 3.6
       python: 2.7
 
     - <<: *test_job
