@@ -68,7 +68,11 @@ jobs:
         - echo "[run]" >> .coveragerc
         - echo "source = $PWD/src" >> .coveragerc
         - echo "parallel = True" >> .coveragerc
-        - echo "omit = *Tests.py" >> .coveragerc
+      # remove some directories which should not be included in the report
+        - echo "omit = "
+        - echo "  *Tests.py" >> .coveragerc
+        - echo "  src/test_*" >> .coveragerc
+        - echo "  src/setup.py" >> .coveragerc
       # Not including this workaround in the coverage report, because it will result
       # in constantly changing coverage reports depending on the number of times
       # the JobTests.py had to run to pass
