@@ -9,6 +9,7 @@ install:
   - choco install dmd
   - choco install ldc
   - choco install swig
+  - choco install clang
   - choco install vswhere
 
 environment:
