@@ -11,6 +11,8 @@ environment:
 
 build: off
 build_script:
+  - ps: get-command vswhere
+  - ps: vswhere -version
   - ps: wget https://github.com/Microsoft/vswhere/releases/download/2.2.11/vswhere.exe -UseBasicParsing -OutFile "$Env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
   - cmd: pip install pypiwin32
   - cmd: python runtest.py test/MSVS/vs-10.0-exec.py
