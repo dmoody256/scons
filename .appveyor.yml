@@ -13,8 +13,8 @@ install:
   ############################################################################
   # Setup the path to Clang-cl
   ############################################################################
-  - set PATH="C:\Program Files\LLVM\bin";%PATH%
-  - clang-cl -v
+  - set PATH="C:\msys64";%PATH%
+  - clang++ -v
 
 environment:
   matrix:
