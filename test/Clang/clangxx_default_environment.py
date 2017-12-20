@@ -29,7 +29,7 @@ import TestSCons
 _exe = TestSCons._exe
 test = TestSCons.TestSCons()
 
-if not test.where_is('clang'):
+if not test.where_is('clang++'):
     test.skip_test("Could not find 'clang++', skipping test.\n")
 
 ## This will likely NOT use clang++.
