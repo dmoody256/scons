@@ -1,25 +1,14 @@
 image: Visual Studio 2017
 shallow_clone: true
 
-#environment:
-#  matrix:
-#    # Match the Python versions currently tested at http://buildbot.scons.org/#/,
-#    # but include 32 and 64-bit variants.
-#    - PYTHON: "C:\\Python27"
-#    - PYTHON: "C:\\Python27-x64"
-#    - PYTHON: "C:\\Python35"
-#    - PYTHON: "C:\\Python35-x64"
-#    - PYTHON: "C:\\Python36"
-#    - PYTHON: "C:\\Python36-x64"
-
 install:
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - python --version
   - pip install lxml
   - pip install pypiwin32
-  #- choco install dmd
-  #- choco install ldc
-  #- choco install swig
+  - choco install dmd
+  - choco install ldc
+  - choco install swig
   - choco install vswhere
 
 environment:
@@ -32,22 +21,51 @@ environment:
       BUILD_JOB_NUM: 3
     - PYTHON: "C:\\Python27"
       BUILD_JOB_NUM: 4
-    - PYTHON: "C:\\Python35"
-      BUILD_JOB_NUM: 1
-    - PYTHON: "C:\\Python35"
-      BUILD_JOB_NUM: 2
-    - PYTHON: "C:\\Python35"
-      BUILD_JOB_NUM: 3
-    - PYTHON: "C:\\Python35"
-      BUILD_JOB_NUM: 4
-    - PYTHON: "C:\\Python36"
-      BUILD_JOB_NUM: 1
-    - PYTHON: "C:\\Python36"
-      BUILD_JOB_NUM: 2
-    - PYTHON: "C:\\Python36"
-      BUILD_JOB_NUM: 3
-    - PYTHON: "C:\\Python36"
-      BUILD_JOB_NUM: 4
+
+#    - PYTHON: "C:\\Python35"
+#      BUILD_JOB_NUM: 1
+#    - PYTHON: "C:\\Python35"
+#      BUILD_JOB_NUM: 2
+#    - PYTHON: "C:\\Python35"
+#      BUILD_JOB_NUM: 3
+#    - PYTHON: "C:\\Python35"
+#      BUILD_JOB_NUM: 4
+#
+#    - PYTHON: "C:\\Python36"
+#      BUILD_JOB_NUM: 1
+#    - PYTHON: "C:\\Python36"
+#      BUILD_JOB_NUM: 2
+#    - PYTHON: "C:\\Python36"
+#      BUILD_JOB_NUM: 3
+#    - PYTHON: "C:\\Python36"
+#      BUILD_JOB_NUM: 4
+#
+#    - PYTHON: "C:\\Python27-x64"
+#      BUILD_JOB_NUM: 1
+#    - PYTHON: "C:\\Python27-x64"
+#      BUILD_JOB_NUM: 2
+#    - PYTHON: "C:\\Python27-x64"
+#      BUILD_JOB_NUM: 3
+#    - PYTHON: "C:\\Python27-x64"
+#      BUILD_JOB_NUM: 4
+#
+#    - PYTHON: "C:\\Python35-x64"
+#      BUILD_JOB_NUM: 1
+#    - PYTHON: "C:\\Python35-x64"
+#      BUILD_JOB_NUM: 2
+#    - PYTHON: "C:\\Python35-x64"
+#      BUILD_JOB_NUM: 3
+#    - PYTHON: "C:\\Python35-x64"
+#      BUILD_JOB_NUM: 4
+#      
+#    - PYTHON: "C:\\Python36-x64"
+#      BUILD_JOB_NUM: 1
+#    - PYTHON: "C:\\Python36-x64"
+#      BUILD_JOB_NUM: 2
+#    - PYTHON: "C:\\Python36-x64"
+#      BUILD_JOB_NUM: 3
+#    - PYTHON: "C:\\Python36-x64"
+#      BUILD_JOB_NUM: 4
 
 build: off
 build_script:
