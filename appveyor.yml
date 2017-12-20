@@ -11,7 +11,8 @@ environment:
 
 build: off
 build_script:
-  - ps: vswhere.exe -version
+  - ps: New-Item $Env:ProgramFiles(x86)\Microsoft Visual Studio\Installer -ItemType Directory
+  - ps: wget https://github.com/Microsoft/vswhere/releases/download/2.2.11/vswhere.exe -UseBasicParsing -OutFile "$Env:ProgramFiles(x86)\Microsoft Visual Studio\Installer\vswhere.exe"
   - cmd: pip install pypiwin32
   - cmd: python runtest.py test/MSVS/vs-10.0-exec.py
   - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 8; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}" & powershell -Command "& {python runtest.py -f build_tests.txt; if($LastExitCode -eq 2) { $host.SetShouldExit(0 )}}"
