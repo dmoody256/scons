@@ -9,8 +9,12 @@ install:
   - choco install dmd
   - choco install ldc
   - choco install swig
-  - choco install git -s "'https://github.com/improbable-io/clang-choco.git'"
   - choco install vswhere
+  ############################################################################
+  # Setup the path to Clang-cl
+  ############################################################################
+  - set PATH="C:\Program Files\LLVM\bin";%PATH%
+  - clang-cl -v
 
 environment:
   matrix:
