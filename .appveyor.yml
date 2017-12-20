@@ -28,7 +28,7 @@ install:
 environment:
   matrix:
     - PYTHON: "C:\\Python27"
-      PATH: "C:\msys64";"C:\Program Files\LLVM\bin";$(PATH)
+      PATH: "C:\msys64;C:\Program Files\LLVM\bin;$(PATH)"
       BUILD_JOB_NUM: 1
     - PYTHON: "C:\\Python27"
       BUILD_JOB_NUM: 2
