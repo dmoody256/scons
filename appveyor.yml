@@ -13,7 +13,7 @@ shallow_clone: true
 #    - PYTHON: "C:\\Python36-x64"
 
 install:
-#  - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - python --version
   - pip install lxml
   - pip install pypiwin32
@@ -24,15 +24,31 @@ install:
 
 environment:
   matrix:
-    - BUILD_JOB_NUM: 1
-    - BUILD_JOB_NUM: 2
-    - BUILD_JOB_NUM: 3
-    - BUILD_JOB_NUM: 4
-    - BUILD_JOB_NUM: 5
-    - BUILD_JOB_NUM: 6
-    - BUILD_JOB_NUM: 7
-    - BUILD_JOB_NUM: 8
+    - PYTHON: "C:\\Python27"
+      BUILD_JOB_NUM: 1
+    - PYTHON: "C:\\Python27"
+      BUILD_JOB_NUM: 2
+    - PYTHON: "C:\\Python27"
+      BUILD_JOB_NUM: 3
+    - PYTHON: "C:\\Python27"
+      BUILD_JOB_NUM: 4
+    - PYTHON: "C:\\Python35"
+      BUILD_JOB_NUM: 1
+    - PYTHON: "C:\\Python35"
+      BUILD_JOB_NUM: 2
+    - PYTHON: "C:\\Python35"
+      BUILD_JOB_NUM: 3
+    - PYTHON: "C:\\Python35"
+      BUILD_JOB_NUM: 4
+    - PYTHON: "C:\\Python36"
+      BUILD_JOB_NUM: 1
+    - PYTHON: "C:\\Python36"
+      BUILD_JOB_NUM: 2
+    - PYTHON: "C:\\Python36"
+      BUILD_JOB_NUM: 3
+    - PYTHON: "C:\\Python36"
+      BUILD_JOB_NUM: 4
 
 build: off
 build_script:
-  - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 8; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}" & powershell -Command "& {python runtest.py -f build_tests.txt; if($LastExitCode -eq 2) { $host.SetShouldExit(0 )}}"
+  - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 4; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}" & powershell -Command "& {python runtest.py -f build_tests.txt; if($LastExitCode -eq 2) { $host.SetShouldExit(0 )}}"
