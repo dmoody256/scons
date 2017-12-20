@@ -1,3 +1,7 @@
+# have to use visual studio 2017
+# because without it vswhere is broken:
+# https://github.com/Microsoft/vswhere/issues/87
+# https://github.com/Microsoft/vswhere/issues/91
 image: Visual Studio 2017
 shallow_clone: true
 
@@ -18,7 +22,7 @@ install:
   - choco install vswhere
 
   # dependency for clang tests
-  - set PATH="C:\msys64";%PATH%
+  - set PATH="C:\msys64";"C:\Program Files\LLVM\bin";%PATH%
   - clang++ -v
 
 environment:
@@ -79,7 +83,6 @@ environment:
 
 build: off
 build_script:
-  - cmd: >-
-    python runtest.py -l -a > all_tests.txt 
-    powershell -Command "& {$TOTAL_BUILD_JOBS = 4; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}"
-    powershell -Command "& {python runtest.py -f build_tests.txt; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
+  # Have to do this in one line if I want the script in the appveyor file: 
+  # https://stackoverflow.com/a/37647169
+  - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 4; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}" & powershell -Command "& {python runtest.py -f build_tests.txt; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
