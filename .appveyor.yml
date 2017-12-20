@@ -9,7 +9,7 @@ install:
   - choco install dmd
   - choco install ldc
   - choco install swig
-  - choco install clang
+  - choco install git -s "'https://github.com/improbable-io/clang-choco'"
   - choco install vswhere
 
 environment:
