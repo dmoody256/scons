@@ -13,11 +13,11 @@ install:
   # need for Docbook tests
   - pip install lxml
   # dependency for D tests
-  - choco install dmd
+  # - choco install dmd
   # dependency for ldc tests
-  - choco install ldc
+  # - choco install ldc
   # depedency for swig tests
-  - choco install swig
+  # - choco install swig
   # dependency for MSVS tests
   - choco install vswhere
 
