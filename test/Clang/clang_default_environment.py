@@ -35,6 +35,7 @@ if not test.where_is('clang'):
 ##  This will likely NOT use clang
 
 test.write('SConstruct', """
+import os
 env = Environment()
 #if env['CC'] != 'clang':
 print(os.environ)
