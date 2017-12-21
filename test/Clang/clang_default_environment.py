@@ -39,7 +39,7 @@ import os
 env = Environment()
 #if env['CC'] != 'clang':
 print(os.environ)
-env['CC'] = test.where_is('clang-cl')
+env['CC'] = """ + test.where_is('clang-cl') + """
 env.Program('foo.c')
 """)
 
