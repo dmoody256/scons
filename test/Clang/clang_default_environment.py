@@ -37,6 +37,7 @@ if not test.where_is('clang'):
 test.write('SConstruct', """
 env = Environment()
 #if env['CC'] != 'clang':
+print(os.environ)
 env['CC'] = '"C:\Program Files/LLVM/bin/clang.exe"'
 env.Program('foo.c')
 """)
