@@ -86,4 +86,5 @@ build: off
 build_script:
   # Have to do this in one line if I want the script in the appveyor file: 
   # https://stackoverflow.com/a/37647169
+  - cmd: python runtest.py test/Clang/clang_default_environment.py
   - cmd: python runtest.py -l -a > all_tests.txt & powershell -Command "& {$TOTAL_BUILD_JOBS = 4; $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines; $start = ($Lines / $TOTAL_BUILD_JOBS) * ($Env:BUILD_JOB_NUM - 1); $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM; if($Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines }; if ( $start -eq 0 ){ $start = 1 }; get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt}" & powershell -Command "& {Write-Host $Env:PATH; }" & REG delete HKCU\Environment /F /V PATH & python runtest.py -f build_tests.txt

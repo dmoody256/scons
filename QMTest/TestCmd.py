@@ -1417,6 +1417,7 @@ class TestCmd(object):
         # It seems that all pythons up to py3.6 still set text mode if you set encoding.
         # TODO: File enhancement request on python to propagate universal_newlines even
         # if encoding is set.hg c
+        print(str(os.environ))
         p = Popen(cmd,
                   stdin=stdin,
                   stdout=subprocess.PIPE,
