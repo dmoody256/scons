@@ -22,7 +22,7 @@ install:
   - choco install vswhere
 
   # dependency for clang tests
-  - set PATH="C:\msys64";"C:\Program Files\LLVM\bin";%PATH%
+  - set PATH=C:\msys64;C:\Program Files\LLVM\bin;%PATH%
   - clang++ -v
   - clang -v
 
