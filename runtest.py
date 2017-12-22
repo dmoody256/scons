@@ -76,13 +76,13 @@
 #                       list of tests to exclude in the current selection of test
 #                       mostly meant to easily exclude tests from -a option
 #
-#       --interval-start FLOAT   
-#                       Percentile as float (0.0 - 1.0) of what test to start on from the
-#                       deterined list of all tests
+#       --interval-start INT   
+#                       index of test to start on from the
+#                       deterined list of tests 
 #
-#       --interval-end FLOAT     
-#                       Percentile as float (0.0 - 1.0) of what test to end on from the
-#                       deterined list of all tests 
+#       --interval-end INT     
+#                       index of test to end on from the
+#                       deterined list of tests
 #
 # (Note:  There used to be a -v option that specified the SCons
 # version to be tested, when we were installing in a version-specific
@@ -139,8 +139,8 @@ suppress_stderr = False
 allow_pipe_files = True
 quit_on_failure = False
 excludelistfile = None
-interval_start = 0.0 
-interval_end = 1.0
+interval_start = 0
+interval_end = 1
 
 usagestr = """\
 Usage: runtest.py [OPTIONS] [TEST ...]
@@ -190,10 +190,8 @@ Options:
      --xml file               Save results to file in SCons XML format.
      --exclude-list FILE      List of tests to exclude in the current selection of test,
                               mostly meant to easily exclude tests from the -a option
-     --interval-start FLOAT   Percentile as float (0.0 - 1.0) of what test to start on from the
-                              deterined list of all tests
-     --interval-end FLOAT     Percentile as float (0.0 - 1.0) of what test to end on from the
-                              deterined list of all tests                                                          
+     --interval-start INT     index of test to start on from the determined list of tests 
+     --interval-end INT       index of test to end on from the determined list of tests                                                         
 
 Environment Variables:
 
@@ -779,8 +777,7 @@ if excludelistfile:
 # ---[ test processing ]-----------------------------------
 tests = [t for t in tests if t not in excludetests]
 tests = [Test(t) for t in tests]
-
-tests = tests[int(interval_start*len(tests)):int(interval_end*len(tests))]
+tests = tests[interval_start:interval_end]
 
 if list_only:
     for t in tests:
