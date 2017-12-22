@@ -70,7 +70,7 @@ environment:
 build: off
 build_script:
   #- cmd: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path /t REG_SZ /d "%path%;c:\newpath"
-  - cmd: echo %PATH%
+  - cmd: path
   - cmd: clang -v
   - cmd: python runtest.py test/Clang/clang_default_environment.py
   #- cmd: python runtest.py -l -a > all_tests.txt 
