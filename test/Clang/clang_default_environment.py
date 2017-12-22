@@ -39,6 +39,7 @@ env = Environment()
 if env['CC'] != 'clang':
     env['CC'] = 'clang'
 env.Program('foo.c')
+print(os.environ)
 """)
 
 test.write('foo.c', """\
