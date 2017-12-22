@@ -777,7 +777,6 @@ if excludelistfile:
 # ---[ test processing ]-----------------------------------
 tests = [t for t in tests if t not in excludetests]
 tests = [Test(t) for t in tests]
-tests = tests[interval_start:interval_end]
 
 if list_only:
     for t in tests:
