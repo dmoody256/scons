@@ -38,8 +38,8 @@ test.write('SConstruct', """
 env = Environment()
 if env['CC'] != 'clang':
     env['CC'] = 'clang'
-env.Program('foo.c')
-print(os.environ)
+prog = env.Program('foo.c')
+env.Command(None, prog, "path" )
 """)
 
 test.write('foo.c', """\
