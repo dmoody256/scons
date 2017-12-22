@@ -39,7 +39,8 @@ env = Environment()
 if env['CC'] != 'clang':
     env['CC'] = 'clang'
 prog = env.Program('foo.c')
-env.Command(None, prog, "path" )
+com = env.Command(None, 'foo.c', "path" )
+env.Depends(prog, com)
 """)
 
 test.write('foo.c', """\
