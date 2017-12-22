@@ -72,6 +72,7 @@ build_script:
   #- cmd: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path /t REG_SZ /d "%path%;c:\newpath"
   - cmd: echo %PATH%
   - cmd: clang -v
+  - cmd: python runtest.pt test/Clang/clang_default_environment.py
   #- cmd: python runtest.py -l -a > all_tests.txt 
   #- ps: >-
   #    $TOTAL_BUILD_JOBS = 4;
