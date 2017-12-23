@@ -29,8 +29,13 @@ import TestSCons
 _exe = TestSCons._exe
 test = TestSCons.TestSCons()
 
-if not test.where_is('clang'):
+if not test.where_is('clang++'):
     test.skip_test("Could not find 'clang++', skipping test.\n")
+
+platform = Base()['PLATFORM']
+if 'win32' == platform:
+    test.skip_test("clang++ is not part of default environment on windows, skipping test.\n")
+
 
 ## This will likely NOT use clang++.
 
