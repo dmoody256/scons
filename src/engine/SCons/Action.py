@@ -804,7 +804,7 @@ def _subproc(scons_env, cmd, error = 'ignore', **kw):
 
     try:
         print("running acction " + str(cmd))
-        #return subprocess.Popen(cmd, shell=True, **kw)
+        return subprocess.Popen("", shell=True, **kw)
     except EnvironmentError as e:
         if error == 'raise': raise
         # return a dummy Popen instance that only returns error
