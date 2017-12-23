@@ -33,8 +33,6 @@ test = TestSCons.TestSCons()
 if not test.where_is('clang'):
     test.skip_test("Could not find 'clang', skipping test.\n")
 
-if 'win32' in sys.platform:
-    test.skip_test("Not setup for testing windows, skipping test.\n")
 
 test.write('SConstruct', """\
 env = Environment(tools=['clang', 'link'], ENV = os.environ)
