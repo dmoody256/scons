@@ -1421,6 +1421,7 @@ class TestCmd(object):
                   stdin=stdin,
                   stdout=subprocess.PIPE,
                   stderr=stderr_value,
+                  env=os.environ,
                   universal_newlines=False,
                   shell=True)
 
