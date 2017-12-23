@@ -73,7 +73,7 @@ build_script:
   - cmd: setx PATH "%PATH%;C:\Program Files\LLVM\bin;"
   - cmd: path
   - cmd: clang -v
-  - cmd: C:\\Python27-x64\\python.exe runtest.py test/Clang/clang_default_environment.py
+  - cmd: python runtest.py test/Clang
   #- cmd: python runtest.py -l -a > all_tests.txt 
   #- ps: >-
   #    $TOTAL_BUILD_JOBS = 4;
