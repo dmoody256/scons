@@ -70,6 +70,7 @@ environment:
 build: off
 build_script:
   - cmd: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /f /v Path /t REG_SZ /d "%path%;C:\Program Files\LLVM\bin"
+  - cmd: setx PATH "%PATH%;C:\Program Files\LLVM\bin;"
   - cmd: path
   - cmd: clang -v
   - cmd: C:\\Python27-x64\\python.exe runtest.py test/Clang/clang_default_environment.py
