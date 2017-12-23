@@ -60,6 +60,7 @@ line 3
 test.run()
 
 import sys
+import os
 
 if sys.platform == 'win32':
     # Handle carriage returns.
@@ -97,7 +98,7 @@ bar.M4(target = 'bar', source = 'bar.m4')
 
     test.up_to_date(arguments = '.')
 
-    test.must_match('wrapper.out', "wrapper.py\n")
+    test.must_match('wrapper.out', "wrapper.py" + os.linesep)
 
     test.must_match('foo.x', "line 1\nfff\nline 3\n")
 
