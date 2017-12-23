@@ -26,7 +26,7 @@ __revision__ = "__FILE__ __REVISION__ __DATE__ __DEVELOPER__"
 
 import TestSCons
 import sys
-import os
+
 _exe = TestSCons._exe
 test = TestSCons.TestSCons()
 
@@ -35,6 +35,7 @@ if not test.where_is('clang'):
 
 
 test.write('SConstruct', """\
+import os
 env = Environment(tools=['clang', 'link'], ENV = os.environ)
 env.Program('foo.c')
 """)
