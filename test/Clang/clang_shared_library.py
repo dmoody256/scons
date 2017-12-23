@@ -47,7 +47,7 @@ elif platform == 'win32':
     libraryname = 'foo.dll'
     # add the environment, otherwise the environment will consist of only vcvarsall.bat variables
     # and not clang
-    env_str = "import os\nenv = Environment(tools=['clang', 'link', 'mingw'], ENV = os.environ)"
+    env_str = "import os\nenv = Environment(tools=['clang', 'gnulink'], ENV = os.environ)"
 else:
     test.fail_test()
 
