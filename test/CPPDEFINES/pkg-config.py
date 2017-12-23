@@ -35,6 +35,7 @@ test = TestSCons.TestSCons()
 pkg_config_path = test.where_is('pkg-config')
 if not pkg_config_path:
     test.skip_test("Could not find 'pkg-config' in system PATH, skipping test.\n")
+pkg_config_path = pkg_config_path.replace('\\', '/')
 
 test.write('bug.pc', """\
 prefix=/usr
