@@ -43,7 +43,7 @@ elif platform == 'darwin':
     filename = 'foo.os'
     libraryname = 'libfoo.dylib'
 elif platform == 'win32':
-    filename = 'foo.obj'
+    filename = 'foo.o'
     libraryname = 'foo.dll'
     # add the environment, otherwise the environment will consist of only vcvarsall.bat variables
     # and not clang
