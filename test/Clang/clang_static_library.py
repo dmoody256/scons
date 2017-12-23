@@ -38,7 +38,7 @@ platform = Base()['PLATFORM']
 if platform == 'win32':
     # add the environment, otherwise the environment will consist of only vcvarsall.bat variables
     # and not clang
-    env_str = "import os\nenv = Environment(tools=['clang', 'gnulink'], ENV = os.environ)"
+    env_str = "import os\nenv = Environment(tools=['clang', 'link'], ENV = os.environ)"
 
 
 test.write('SConstruct', """\
