@@ -63,7 +63,7 @@ int bar() {
 """)
 
 test.run()
-
+print(test.stdout())
 test.must_exist(test.workpath(filename))
 test.must_exist(test.workpath(libraryname))
 
