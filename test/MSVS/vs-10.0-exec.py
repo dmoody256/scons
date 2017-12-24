@@ -59,6 +59,9 @@ if env.WhereIs('cl'):
     print("os.environ.update(%%s)" %% repr(env['ENV']))
 """ % locals())
 
+if(test.stdout() == ""):
+    msg = "Visual Studio %s missing cl; skipping test.\n" % msvs_version
+    test.skip_test(msg)
 exec(test.stdout())
 
 
