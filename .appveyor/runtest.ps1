@@ -10,7 +10,7 @@ function Retry-Command
     
     # Setting ErrorAction to Stop is important. This ensures any errors that occur in the command are 
     # treated as terminating errors, and will be caught by the catch block.
-    # $args.ErrorAction = "Stop"
+    $command.ErrorAction = "Stop"
     
     $retrycount = 0
     $completed = $false
@@ -33,7 +33,7 @@ function Retry-Command
     }
 }
 
-Retry-Command -Command "python runtest.py src/engine/SCons/JobTests2.py" -Verbose
+Retry-Command -Command "python8 runtest.py src/engine/SCons/JobTests2.py" -Verbose
 
 $TOTAL_BUILD_JOBS = 4;
 $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
