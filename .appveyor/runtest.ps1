@@ -17,7 +17,7 @@ function Retry-Command
 
     while (-not $completed) {
         try {
-            & $command @args
+            Invoke-Expression $command 
             Write-Verbose ("Command [{0}] succeeded." -f $command)
             $completed = $true
         } catch {
