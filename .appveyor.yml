@@ -71,7 +71,7 @@ environment:
 
 build: off
 build_script:
-  - cmd: python runtest.py test/SWIG/SWIGPATH.py
+  - cmd: python runtest.py test/SWIG
   #- cmd: echo src\engine\SCons\JobTests.py > exclude_jobs.txt
   #- cmd: type exclude_jobs.txt
   #- cmd: python runtest.py -l -a --exclude-list exclude_jobs.txt > all_tests.txt 
