@@ -74,5 +74,5 @@ build_script:
 
   - cmd: echo "src/engine/SCons/JobTests.py" > exclude_jobs.txt
   - cmd: python runtest.py -l -a --exclude-list exclude_jobs.txt > all_tests.txt 
-  - ps: ./.appveyor/runtest.ps1
+  - cmd: powershell "./appveyor/runtest.ps1"
   - cmd: powershell -Command "& { python runtest.py -j 2 -f build_tests.txt; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
