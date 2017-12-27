@@ -33,7 +33,7 @@ function Retry-Command
     }
 }
 
-Retry-Command -Command "python8 runtest.py src/engine/SCons/JobTests2.py" -Verbose
+Retry-Command -Command "python runtest.py src/engine/SCons/JobTests.py" -Verbose
 
 $TOTAL_BUILD_JOBS = 4;
 $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
@@ -42,3 +42,5 @@ $end = ($Lines / $TOTAL_BUILD_JOBS) * $Env:BUILD_JOB_NUM;
 if ( $Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines };
 if ( $start -eq 0 ){ $start = 1 };
 get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt;
+python runtest.py -j 2 -f build_tests.txt; 
+if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}
