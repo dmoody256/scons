@@ -55,9 +55,9 @@ def AreVCStoreLibPathsInLIBPATH(output):
         # For example,
         # C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\LIB\store\amd64
         # C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\LIB\store\references
-        if r'vc\lib\store\references' in path:
+        if r'\lib\store\references' in path:
             vclibstorerefs_path_present = True
-        elif r'vc\lib\store' in path:
+        elif r'\lib\store' in path:
             vclibstore_path_present = True
 
     return (vclibstore_path_present, vclibstorerefs_path_present, msvc_version)
