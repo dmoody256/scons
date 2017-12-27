@@ -107,6 +107,7 @@ test.fail_test(vclibstorerefs_path_present is False,
 
 # Test setting MSVC_UWP_APP is '0' (False)
 test.run(arguments = "MSVC_UWP_APP=0")
+print (test.stdout())
 (vclibstorerefs_path_present, msvc_version) = AreVCStoreLibPathsInLIBPATH(test.stdout())
 test.fail_test(msvc_version != greatest_msvc_version_on_system,
                message='MSVC_VERSION (%s) does not match expected greatest version on system (%s)' \
