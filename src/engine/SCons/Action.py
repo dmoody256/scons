@@ -803,6 +803,7 @@ def _subproc(scons_env, cmd, error = 'ignore', **kw):
     kw['env'] = new_env
 
     try:
+        print(str(cmd))
         return subprocess.Popen(cmd, **kw)
     except EnvironmentError as e:
         if error == 'raise': raise
