@@ -379,6 +379,7 @@ def reset_installed_vcs():
 # (or Clone) calls by memoizing the environment variables set by vcvars*.bat.
 script_env_stdout_cache = {}
 def script_env(script, args=None):
+    print (str(script) + str(args))
     cache_key = (script, args)
     stdout = script_env_stdout_cache.get(cache_key, None)
     if stdout is None:
