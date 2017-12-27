@@ -322,7 +322,6 @@ def find_batch_file(env,msvc_version,host_arch,target_arch):
     elif 8 <= vernum <= 14:
         batfilename = os.path.join(pdir, "vcvarsall.bat")
     else:  # vernum >= 14.1  VS2017 and above
-        print("found batch")
         batfilename = os.path.join(pdir, "Auxiliary", "Build", "vcvarsall.bat")
 
     if not os.path.exists(batfilename):
@@ -380,7 +379,6 @@ def reset_installed_vcs():
 # (or Clone) calls by memoizing the environment variables set by vcvars*.bat.
 script_env_stdout_cache = {}
 def script_env(script, args=None):
-    print (str(script) + str(args))
     cache_key = (script, args)
     stdout = script_env_stdout_cache.get(cache_key, None)
     if stdout is None:
@@ -484,7 +482,6 @@ def msvc_find_valid_batch_script(env,version):
             if env.get('MSVC_UWP_APP') == '1':
                 # Initialize environment variables with store/universal paths
                 arg += ' store'
-                print (str( env['TARGET_ARCH']))
 
         # Try to locate a batch file for this host/target platform combo
         try:
