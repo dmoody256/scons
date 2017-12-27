@@ -483,6 +483,7 @@ def msvc_find_valid_batch_script(env,version):
             if env.get('MSVC_UWP_APP') == '1':
                 # Initialize environment variables with store/universal paths
                 arg += ' store'
+                print (str( env['TARGET_ARCH']))
 
         # Try to locate a batch file for this host/target platform combo
         try:
