@@ -510,7 +510,7 @@ def msvc_find_valid_batch_script(env,version):
         if not vc_script and sdk_script:
             debug('vc.py:msvc_find_valid_batch_script() use_script 4: trying sdk script: %s'%(sdk_script))
             try:
-                d = script_env(sdk_script)
+                d = script_env(sdk_script, args=arg)
             except BatchFileExecutionError as e:
                 debug('vc.py:msvc_find_valid_batch_script() use_script 5: failed running SDK script %s: Error:%s'%(repr(sdk_script),e))
                 continue
