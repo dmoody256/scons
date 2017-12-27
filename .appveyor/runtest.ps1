@@ -3,7 +3,7 @@ function Retry-Command
 {
     param (
     [Parameter(Mandatory=$true)][string]$command, 
-    [Parameter(Mandatory=$true)][hashtable]$args, 
+    [Parameter(Mandatory=$false)][hashtable]$args, 
     [Parameter(Mandatory=$false)][int]$retries = 5, 
     [Parameter(Mandatory=$false)][int]$secondsDelay = 2
     )
@@ -33,7 +33,7 @@ function Retry-Command
     }
 }
 
-Retry-Command -Command "python" -Args @{"runtest.py", "src/engine/SCons/JobTests.py"} -Verbose
+Retry-Command -Command "python runtest.py src/engine/SCons/JobTests.py" -Verbose
 
 $TOTAL_BUILD_JOBS = 4;
 $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
