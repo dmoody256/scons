@@ -78,7 +78,7 @@ if ARGUMENTS.get('MSVC_UWP_APP'):
                   allowed_values=('0', '1')))
 else:
     help_vars = None
-env = Environment(tools=['default', 'msvc'], variables=help_vars)
+env = Environment(tools=['default', 'msvc'], variables=help_vars, MSVC_VERSION='14.0' )
 # Print the ENV LIBPATH to stdout
 print('env[ENV][LIBPATH]=%s' % env.get('ENV').get('LIBPATH'))
 print('env[MSVC_VERSION]=%s' % env.get('MSVC_VERSION'))
@@ -97,7 +97,7 @@ if maj < 14:
     test.skip_test("Available MSVC doesn't support App store ")
 
 # Test setting MSVC_UWP_APP is '1' (True)
-test.run(arguments = "MSVC_UWP_APP=1 MSVC_VERSION=14.0")
+test.run(arguments = "MSVC_UWP_APP=1")
 (vclibstore_path_present, vclibstorerefs_path_present, msvc_version) = AreVCStoreLibPathsInLIBPATH(test.stdout())
 test.fail_test(msvc_version != greatest_msvc_version_on_system,
                message='MSVC_VERSION (%s) does not match expected greatest version on system (%s)' \
@@ -106,7 +106,7 @@ test.fail_test((vclibstore_path_present is False) or (vclibstorerefs_path_presen
                message='VC Store LIBPATHs NOT present when MSVC_UWP_APP=1 (msvc_version=%s)' % msvc_version)
 
 # Test setting MSVC_UWP_APP is '0' (False)
-test.run(arguments = "MSVC_UWP_APP=0 MSVC_VERSION=14.0")
+test.run(arguments = "MSVC_UWP_APP=0")
 (vclibstore_path_present, vclibstorerefs_path_present, msvc_version) = AreVCStoreLibPathsInLIBPATH(test.stdout())
 test.fail_test(msvc_version != greatest_msvc_version_on_system,
                message='MSVC_VERSION (%s) does not match expected greatest version on system (%s)' \
@@ -115,7 +115,7 @@ test.fail_test((vclibstore_path_present is True) or (vclibstorerefs_path_present
                message='VC Store LIBPATHs present when MSVC_UWP_APP=0 (msvc_version=%s)' % msvc_version)
 
 # Test not setting MSVC_UWP_APP
-test.run(arguments = "MSVC_VERSION=14.0")
+test.run(arguments = "")
 (vclibstore_path_present, vclibstorerefs_path_present, msvc_version) = AreVCStoreLibPathsInLIBPATH(test.stdout())
 test.fail_test(msvc_version != greatest_msvc_version_on_system,
                message='MSVC_VERSION (%s) does not match expected greatest version on system (%s)' \
