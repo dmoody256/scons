@@ -10,7 +10,7 @@ function Retry-Command
     
     # Setting ErrorAction to Stop is important. This ensures any errors that occur in the command are 
     # treated as terminating errors, and will be caught by the catch block.
-    $command.ErrorAction = "Stop"
+    # $command.ErrorAction = "Stop"
     
     $retrycount = 0
     $completed = $false
