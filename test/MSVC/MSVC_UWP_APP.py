@@ -87,7 +87,7 @@ print('env[MSVC_VERSION]=%s' % env.get('MSVC_VERSION'))
 installed_msvc_versions = msvc.cached_get_installed_vcs()
 # MSVC guaranteed to be at least one version on the system or else skip_if_not_msvc() function
 # would have skipped the test
-greatest_msvc_version_on_system = installed_msvc_versions[0]
+greatest_msvc_version_on_system = "14.0"
 maj, min = msvc.msvc_version_to_maj_min(greatest_msvc_version_on_system)
 
 # We always use the greatest MSVC version installed on the system
