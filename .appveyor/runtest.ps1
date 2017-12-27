@@ -33,7 +33,7 @@ function Retry-Command
     }
 }
 
-Retry-Command -Command "python runtest.py src/engine/SCons/JobTests.py" -Verbose
+Retry-Command -Command "python runtest.py src/engine/SCons/JobTests2.py" -Verbose
 
 $TOTAL_BUILD_JOBS = 4;
 $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
