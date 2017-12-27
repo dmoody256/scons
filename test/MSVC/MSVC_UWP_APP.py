@@ -98,6 +98,7 @@ if maj < 14:
 
 # Test setting MSVC_UWP_APP is '1' (True)
 test.run(arguments = "MSVC_UWP_APP=1")
+print (test.stdout())
 (vclibstore_path_present, vclibstorerefs_path_present, msvc_version) = AreVCStoreLibPathsInLIBPATH(test.stdout())
 test.fail_test(msvc_version != greatest_msvc_version_on_system,
                message='MSVC_VERSION (%s) does not match expected greatest version on system (%s)' \
