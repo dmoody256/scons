@@ -322,6 +322,7 @@ def find_batch_file(env,msvc_version,host_arch,target_arch):
     elif 8 <= vernum <= 14:
         batfilename = os.path.join(pdir, "vcvarsall.bat")
     else:  # vernum >= 14.1  VS2017 and above
+        print("found batch")
         batfilename = os.path.join(pdir, "Auxiliary", "Build", "vcvarsall.bat")
 
     if not os.path.exists(batfilename):
