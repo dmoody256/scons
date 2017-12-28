@@ -105,7 +105,7 @@ test.wait_for(marker_2)
 test.run(program = test.workpath('work/build/hello'), stdout="hello 2\n")
 
 
-test.send("exit\n")
+scons.send("exit\n")
 
 
 
