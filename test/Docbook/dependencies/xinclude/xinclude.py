@@ -55,7 +55,7 @@ test.not_up_to_date(options='-n', arguments='.')
 # The new file should contain the changes
 test.run()
 test.must_exist(test.workpath('manual_xi.xml'))
-test.must_contain(test.workpath('manual_xi.xml'),'<para>This is another text.')
+test.must_contain(test.workpath('manual_xi.xml'),b'<para>This is another text.')
 
 test.pass_test()
 
