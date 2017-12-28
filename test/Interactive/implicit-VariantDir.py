@@ -134,7 +134,7 @@ test.run(program = abs_foo_exe, stdout = 'Hello from foo.h\n')
 
 scons.send('exit\n')
 
-test.finish(scons)
+#test.finish(scons)
 
 
 
