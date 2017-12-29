@@ -246,9 +246,11 @@ test.subdir('testdir2',
             ['testdir2', 'com'],
             ['testdir2', 'com', 'javasource'])
 
-# simple SConstruct which passes the 3 .java as source
+# simple SConstruct which passes the 3 .java 
+# as source
 # and extracts the jars back to classes
 test.write(['testdir2', 'SConstruct'], """
+import os
 foo = Environment()
 print(str(os.environ))
 foo.Jar(target = 'foobar', source = [
