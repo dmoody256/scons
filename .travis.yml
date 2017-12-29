@@ -57,7 +57,7 @@ jobs:
         - sudo mkdir -p $PYSITEDIR
         - sudo touch ${PYSITEDIR}/usercustomize.py
         - echo "import os" | sudo tee --append ${PYSITEDIR}/usercustomize.py
-        - echo "os.environ['COVERAGE_PROCESS_START'] = $PWD/.coveragerc" | sudo tee --append ${PYSITEDIR}/usercustomize.py
+        - echo "os.environ['COVERAGE_PROCESS_START'] = '$PWD/.coveragerc'" | sudo tee --append ${PYSITEDIR}/usercustomize.py
         - echo "import coverage" | sudo tee --append ${PYSITEDIR}/usercustomize.py
         - echo "coverage.process_startup()" | sudo tee --append ${PYSITEDIR}/usercustomize.py
 
