@@ -250,6 +250,7 @@ test.subdir('testdir2',
 # and extracts the jars back to classes
 test.write(['testdir2', 'SConstruct'], """
 foo = Environment()
+print(str(os.environ))
 foo.Jar(target = 'foobar', source = [
     'com/javasource/JavaFile1.java', 
     'com/javasource/JavaFile2.java',
@@ -305,7 +306,7 @@ public class JavaFile3
 """)
 
 test.run(chdir='testdir2')
-
+print(test.stdout())
 # check the output and make sure the java files got converted to classes
 if("jar cf foo.jar " +
    "-C com/javasource/JavaFile1 com/javasource/JavaFile1.class " +
