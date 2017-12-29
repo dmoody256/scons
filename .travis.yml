@@ -51,8 +51,12 @@ jobs:
       before_script:
         - sudo pip install coverage
         - sudo pip install coveralls
-        - echo "import coverage" | sudo tee --append /usr/lib/python2.7/sitecustomize.py
-        - echo "coverage.process_startup()" | sudo tee --append /usr/lib/python2.7/sitecustomize.py 
+        - python -m site
+        - export PYSITEDIR=$(python -m site --user-site)
+        - sudo mkdir -p $PYSITEDIR
+        - sudo touch ${PYSITEDIR}/usercustomize.py
+        - echo "import coverage" | sudo tee --append ${PYSITEDIR}/usercustomize.py
+        - echo "coverage.process_startup()" | sudo tee --append ${PYSITEDIR}/usercustomize.py
 
       script: 
         - export TOTAL_BUILD_JOBS=8
