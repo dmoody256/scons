@@ -88,7 +88,7 @@ jobs:
         - coverage run --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
 
       after_success:
-        - coverage combine
+        - coverage combine $PWD /tmp
         - coverage report
         - coveralls --rcfile=$PWD/.coveragerc
 
