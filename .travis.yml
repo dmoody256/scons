@@ -52,6 +52,7 @@ jobs:
         - sudo pip install coverage
         - sudo pip install coveralls
         - export PYTHONNOUSERSITE=
+        - export PRESERVE=1
         - python -m site
         - export PYSITEDIR=$(python -m site --user-site)
         - sudo mkdir -p $PYSITEDIR
