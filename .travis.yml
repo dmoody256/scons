@@ -87,11 +87,13 @@ jobs:
         - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
-        - coverage run --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
+        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
 
       after_success:
         - find /tmp -name '.coverage.*' -print > coverage_reports.txt
         - sed -i 's/\/\.coverage\..*$//g' coverage_reports.txt
+        - awk '!seen[$0]++' coverage_reports.txt > coverage_reports.txt.tmp
+        - mv coverage_reports.txt.tmp coverage_reports.txt
         - sed -i -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' coverage_reports.txt
         - coverage combine $PWD `cat coverage_reports.txt`
         - coverage report
