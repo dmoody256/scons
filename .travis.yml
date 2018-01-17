@@ -1,6 +1,6 @@
 dist: trusty
 language: python
-
+sudo: false
 install:
     - ./.travis/install.sh
 
@@ -27,27 +27,23 @@ jobs:
       after_success: skip
       python: 2.7
       env: PYVER=27
-      sudo: required
 
     - <<: *test_job
       python: 3.5
       env: PYVER=35
-      sudo: required
 
     - <<: *test_job
       python: 3.6
       env: PYVER=36
-      sudo: required
 
     - <<: *test_job
       python: pypy
       env: PYVER=pypy
-      sudo: required
 
 
     - &coverage_jobs
       stage: Coverage
-      
+      python: 2.7
       before_script:
         - sudo pip install coverage
         - sudo pip install coveralls
