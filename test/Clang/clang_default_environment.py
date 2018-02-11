@@ -39,6 +39,8 @@ env = Environment()
 if env['CC'] != 'clang':
     env['CC'] = 'clang'
 env.Program('foo.c')
+import os
+print("SConstruct env = " + str(os.environ['PATH']))
 """)
 
 test.write('foo.c', """\
