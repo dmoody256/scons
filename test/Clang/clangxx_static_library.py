@@ -46,7 +46,7 @@ env.PrependENVPath('PATH', r'%s')
 env.PrependENVPath('PATH', r'%s')
 env.StaticLibrary('foo', 'foo.cpp')
 print("ENV = " + str(env.ENV['PATH'])
-""" % clang_dir, ar_dir)
+""" % (clang_dir, ar_dir))
 
 test.write('foo.cpp', """\
 int bar() {
