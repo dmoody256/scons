@@ -39,7 +39,6 @@ test.write('SConstruct', """\
 env = Environment(tools=['clang', 'link'])
 env.PrependENVPath('PATH', r'%s')
 env.Program('foo.c')
-print("SCon ENV = " + str(env['ENV']))
 """ % clang_dir)
 
 test.write('foo.c', """\
