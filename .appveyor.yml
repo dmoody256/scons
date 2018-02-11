@@ -4,11 +4,11 @@ shallow_clone: true
 install:
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - python --version
-  - pip install lxml
+#  - pip install lxml
   - pip install pypiwin32
-  - choco install dmd
-  - choco install ldc
-  - choco install swig
+#  - choco install dmd
+#  - choco install ldc
+#  - choco install swig
   - choco install vswhere
 
 environment:
