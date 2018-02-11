@@ -31,6 +31,8 @@ _exe = TestSCons._exe
 test = TestSCons.TestSCons()
 
 
+import subprocess
+print subprocess.Popen("where ar", stdout=PIPE).stdout.read()
 
 if not test.where_is('clang++') or not test.where_is('ar'):
     test.skip_test("Could not find 'clang++' and 'ar', skipping test.\n")
