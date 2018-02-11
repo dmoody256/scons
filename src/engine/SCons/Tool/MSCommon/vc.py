@@ -562,7 +562,7 @@ def msvc_setup_env(env):
         SCons.Warnings.warn(SCons.Warnings.VisualCMissingWarning, warn_msg)
         return None
     
-    env.PrependENVPath('PATH', os.environ['PATH'], delete_existing=False)
+    
 
     for k, v in d.items():
         debug('vc.py:msvc_setup_env() env:%s -> %s'%(k,v))
@@ -570,6 +570,8 @@ def msvc_setup_env(env):
         #print("New Path = " + str(d))
         env.PrependENVPath(k, v, delete_existing=False)
         #print("Reseult Path = " +  str(env['ENV']))
+    env.PrependENVPath('PATH', os.environ['PATH'], delete_existing=False)
+    print("Reseult Path = " +  str(env['ENV']))
 def msvc_exists(version=None):
     vcs = cached_get_installed_vcs()
     if version is None:
