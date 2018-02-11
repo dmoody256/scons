@@ -35,8 +35,7 @@ if not test.where_is('clang'):
 test.write('SConstruct', """\
 env = Environment(tools=['clang', 'link'])
 env.Program('foo.c')
-import os
-print("SCon ENV = " + str(os.environ['PATH']))
+print("SCon ENV = " + str(env['ENV']))
 """)
 
 test.write('foo.c', """\
