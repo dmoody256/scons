@@ -566,10 +566,10 @@ def msvc_setup_env(env):
 
     for k, v in d.items():
         debug('vc.py:msvc_setup_env() env:%s -> %s'%(k,v))
-        print("Current Path = " + str(os.environ['PATH']))
-        print("New Path = " + str(d))
+        #print("Current Path = " + str(os.environ['PATH']))
+        #print("New Path = " + str(d))
         env.PrependENVPath(k, v, delete_existing=True)
-        print("Reseult Path = " +  str(env['ENV']))
+        #print("Reseult Path = " +  str(env['ENV']))
 def msvc_exists(version=None):
     vcs = cached_get_installed_vcs()
     if version is None:
