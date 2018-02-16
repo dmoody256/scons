@@ -48,14 +48,13 @@ import SCons.Tool.cc
 from SCons.Tool.clangCommon import get_clang_install_dirs
 
 
-compilers = ['clang']
+compilers = ['clang', 'clang-cl']
 
 def generate(env):
     """Add Builders and construction variables for clang to an Environment."""
     SCons.Tool.cc.generate(env)
     
     if env['PLATFORM'] == 'win32':
-        
         if 'msvc' in env['TOOLS']:
             env['CC'] = 'clang-cl'
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
