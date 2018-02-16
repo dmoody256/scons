@@ -53,7 +53,7 @@ compilers = ['clang']
 def generate(env):
     """Add Builders and construction variables for clang to an Environment."""
     SCons.Tool.cc.generate(env)
-
+    print("clang tool generated")
     if env['PLATFORM'] == 'win32':
         # Ensure that we have a proper path for clang
         clang = SCons.Tool.find_program_path(env, compilers[0], default_paths=get_clang_install_dirs(env['PLATFORM']))
