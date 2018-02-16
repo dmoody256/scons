@@ -45,7 +45,7 @@ env = Environment()
 if env['CC'] != '%s':
     env['CC'] = '%s'
 env.Program('foo.c')
-""" % (clang_tool,clang_tool)
+""" % (clang_tool,clang_tool))
 
 test.write('foo.c', """\
 #include <stdio.h>

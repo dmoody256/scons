@@ -59,7 +59,7 @@ def generate(env):
     if env['PLATFORM'] == 'win32':
        
         if 'msvc' in env['TOOLS']:
-            compilers = ['clang-cl']
+            compilers[0] = 'clang-cl'
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
         else:
             env['CC'] = env.Detect(compilers) or 'clang'
