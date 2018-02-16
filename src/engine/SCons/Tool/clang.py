@@ -50,7 +50,7 @@ import SCons.Tool.mingw
 from SCons.Tool.clangCommon import get_clang_install_dirs
 
 
-compilers = ['clang-cl']
+compilers = ['clang']
 
 def generate(env):
     """Add Builders and construction variables for clang to an Environment."""
@@ -58,16 +58,13 @@ def generate(env):
     
     if env['PLATFORM'] == 'win32':
        
-        if 'msvc' in env['TOOLS']:
-            print(str(env['TOOLS']))
+        if 'msvc' in env['TOOLS'] and env['CC'] == 'clang':
             env['CC'] = 'clang-cl'
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
         else:
             env['CC'] = env.Detect(compilers) or 'clang'
             if env['PLATFORM'] in ['cygwin', 'win32']:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
-                import SCons.Tool
-                import SCons.Tool.mingw
                 SCons.Tool.mingw.generate(env)
             else:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')

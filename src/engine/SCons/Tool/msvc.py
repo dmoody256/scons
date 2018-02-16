@@ -218,8 +218,6 @@ def generate(env):
 
     clang = SCons.Tool.find_program_path(env, 'clang-cl', default_paths=get_clang_install_dirs(env['PLATFORM']))
     if clang:
-
-        print("print found clang for msvc")
         SCons.Tool.clang.generate(env)
     # TODO(batch):  shouldn't reach in to cmdgen this way; necessary
     # for now to bypass the checks in Builder.DictCmdGenerator.__call__()
