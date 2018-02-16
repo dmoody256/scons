@@ -46,6 +46,7 @@ import sys
 import SCons.Util
 import SCons.Tool.cc
 import SCons.Tool
+import SCons.Tool.mingw
 from SCons.Tool.clangCommon import get_clang_install_dirs
 
 
