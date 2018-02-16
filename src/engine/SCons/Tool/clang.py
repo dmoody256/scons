@@ -58,8 +58,8 @@ def generate(env):
     
     if env['PLATFORM'] == 'win32':
        
-        if 'msvc' in env['TOOLS'] and env['CC'] == 'clang':
-            env['CC'] = 'clang-cl'
+        if 'msvc' in env['TOOLS']:
+            compilers = ['clang-cl']
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
         else:
             env['CC'] = env.Detect(compilers) or 'clang'
@@ -70,13 +70,13 @@ def generate(env):
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')
 
         # Ensure that we have a proper path for clang
-        clang = SCons.Tool.find_program_path(env, env['CC'], default_paths=get_clang_install_dirs(env['PLATFORM']))
+        clang = SCons.Tool.find_program_path(env, compilers[0], default_paths=get_clang_install_dirs(env['PLATFORM']))
         if clang:
             clang_bin_dir = os.path.dirname(clang)
             env.AppendENVPath('PATH', clang_bin_dir)
 
     # determine compiler version
-    if env['CC']:
+    if env['CC'] == compilers[0]:
         #pipe = SCons.Action._subproc(env, [env['CC'], '-dumpversion'],
         pipe = SCons.Action._subproc(env, [env['CC'], '--version'],
                                      stdin='devnull',
