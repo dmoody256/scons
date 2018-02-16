@@ -45,6 +45,7 @@ import sys
 
 import SCons.Util
 import SCons.Tool.cc
+import SCons.Tool
 from SCons.Tool.clangCommon import get_clang_install_dirs
 
 
