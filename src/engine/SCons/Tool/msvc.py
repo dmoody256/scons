@@ -48,6 +48,7 @@ import SCons.Warnings
 import SCons.Scanner.RC
 
 from .MSCommon import msvc_exists, msvc_setup_env_once, msvc_version_to_maj_min
+from SCons.Tool.clangCommon import get_clang_install_dirs
 
 CSuffixes = ['.c', '.C']
 CXXSuffixes = ['.cc', '.cpp', '.cxx', '.c++', '.C++']
