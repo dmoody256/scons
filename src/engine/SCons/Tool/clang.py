@@ -62,13 +62,13 @@ def generate(env):
             compilers[0] = 'clang-cl'
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
         else:
-            env['CC'] = env.Detect(compilers) or 'clang'
             if env['PLATFORM'] in ['cygwin', 'win32']:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
-                #SCons.Tool.mingw.generate(env)
+                SCons.Tool.mingw.generate(env)
             else:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')
-
+            env['CC'] = env.Detect(compilers) or 'clang'
+            
         # Ensure that we have a proper path for clang
         clang = SCons.Tool.find_program_path(env, compilers[0], default_paths=get_clang_install_dirs(env['PLATFORM']))
         if clang:
