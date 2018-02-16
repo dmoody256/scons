@@ -48,7 +48,7 @@ import SCons.Tool.cc
 from SCons.Tool.clangCommon import get_clang_install_dirs
 
 
-compilers = ['clang', 'clang-cl']
+compilers = ['clang-cl']
 
 def generate(env):
     """Add Builders and construction variables for clang to an Environment."""
