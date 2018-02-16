@@ -43,6 +43,7 @@ import SCons.Errors
 import SCons.Platform.win32
 import SCons.Tool
 import SCons.Tool.msvs
+import SCons.Tool.clang
 import SCons.Util
 import SCons.Warnings
 import SCons.Scanner.RC
