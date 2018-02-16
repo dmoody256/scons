@@ -214,6 +214,12 @@ def generate(env):
     """Add Builders and construction variables for MSVC++ to an Environment."""
     static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
 
+    # add msvc clang-cl, later it will be over written with msvc cl, but the path is setup should the user want 
+    # use it as the CC or CXX compiler
+    clang = SCons.Tool.find_program_path(env, 'clang-cl', default_paths=get_clang_install_dirs(env['PLATFORM']))
+    if clang:
+        SCons.Tool.clang.generate(env)
+
     # TODO(batch):  shouldn't reach in to cmdgen this way; necessary
     # for now to bypass the checks in Builder.DictCmdGenerator.__call__()
     # and allow .cc and .cpp to be compiled in the same command line.
