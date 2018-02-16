@@ -67,16 +67,18 @@ def generate(env):
                 SCons.Tool.mingw.generate(env)
             else:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')
-            env['CC'] = env.Detect(compilers) or 'clang'
             
+
         # Ensure that we have a proper path for clang
         clang = SCons.Tool.find_program_path(env, compilers[0], default_paths=get_clang_install_dirs(env['PLATFORM']))
         if clang:
             clang_bin_dir = os.path.dirname(clang)
             env.AppendENVPath('PATH', clang_bin_dir)
+            
+    env['CC'] = env.Detect(compilers) or 'clang'
 
     # determine compiler version
-    if env['CC'] == compilers[0]:
+    if env['CC']:
         #pipe = SCons.Action._subproc(env, [env['CC'], '-dumpversion'],
         pipe = SCons.Action._subproc(env, [env['CC'], '--version'],
                                      stdin='devnull',

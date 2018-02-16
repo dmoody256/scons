@@ -56,9 +56,6 @@ def generate(env):
     static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
 
     SCons.Tool.cxx.generate(env)
-
-    env['CXX']        = env.Detect(compilers) or 'clang++'
-
     # platform specific settings
     if env['PLATFORM'] == 'aix':
         env['SHCXXFLAGS'] = SCons.Util.CLVar('$CXXFLAGS -mminimal-toc')
@@ -69,11 +66,24 @@ def generate(env):
     elif env['PLATFORM'] == 'sunos':
         env['SHOBJSUFFIX'] = '.pic.o'
     elif env['PLATFORM'] == 'win32':
+
+        if 'msvc' in env['TOOLS']:
+            compilers[0] = 'clang-cl'
+            env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
+        else:
+            if env['PLATFORM'] in ['cygwin', 'win32']:
+                env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
+                SCons.Tool.mingw.generate(env)
+            else:
+                env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')
+
         # Ensure that we have a proper path for clang++
         clangxx = SCons.Tool.find_program_path(env, compilers[0], default_paths=get_clang_install_dirs(env['PLATFORM']))
         if clangxx:
             clangxx_bin_dir = os.path.dirname(clangxx)
             env.AppendENVPath('PATH', clangxx_bin_dir)
+
+    env['CXX']        = env.Detect(compilers) or 'clang++'
 
     # determine compiler version
     if env['CXX']:
