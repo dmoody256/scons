@@ -5,12 +5,12 @@ install:
   #set python version, and cygwin tools for clang tests
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;%PATH%"
   - python --version
-  - pip install lxml
+  #- pip install lxml
   - pip install pypiwin32
-  - choco install dmd
-  - choco install ldc
-  - choco install swig
-  - choco install vswhere
+  #- choco install dmd
+  #- choco install ldc
+  #- choco install swig
+  #- choco install vswhere
 
 environment:
   matrix:
