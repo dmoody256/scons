@@ -73,7 +73,6 @@ def generate(env):
         else:
             if env['PLATFORM'] in ['cygwin', 'win32']:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
-                SCons.Tool.mingw.generate(env)
             else:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS -fPIC')
 
