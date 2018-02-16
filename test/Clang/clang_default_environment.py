@@ -36,8 +36,8 @@ if not test.where_is('clang'):
 
 test.write('SConstruct', """
 env = Environment()
-if env['CC'] != 'clang':
-    env['CC'] = 'clang'
+if env['CC'] != 'clang-cl':
+    env['CC'] = 'clang-cl'
 env.Program('foo.c')
 """)
 
