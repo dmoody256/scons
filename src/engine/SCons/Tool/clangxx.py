@@ -70,6 +70,10 @@ def generate(env):
         if 'msvc' in env['TOOLS']:
             compilers[0] = 'clang-cl'
             env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
+            ar = SCons.Tool.find_program_path(env, 'ar', default_paths=get_clang_install_dirs(env['PLATFORM']))
+            if ar:
+                ar_bin_dir = os.path.dirname(ar)
+                env.AppendENVPath('PATH', ar_bin_dir)
         else:
             if env['PLATFORM'] in ['cygwin', 'win32']:
                 env['SHCCFLAGS'] = SCons.Util.CLVar('$CCFLAGS')
