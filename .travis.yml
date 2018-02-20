@@ -14,18 +14,16 @@ jobs:
   include:
     - &test_job
       stage: Test
-      script: 
-      # WORKAROUND: attempt to retry JobTests.py if it fails and then continue if it passes, if it fails ten times
-      # then it is a real failure not related to intermittent travis failures
-        - n=0; while [[ $n -lt 10 ]]; do python runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [ "$n" -gt "9" ]; then false; fi
-        - echo "src/engine/SCons/JobTests.py" > exclude_jobtest
-        - python runtest.py -a --exclude-list exclude_jobtest || if [[ $? == 2 ]]; then true; else false; fi
+      
+      # run the entire test suite
+      script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
       python: 2.7
       env: PYVER=27
       sudo: required
 
+    # run the test suite again for each version of python
     - <<: *test_job
       python: 3.5
       env: PYVER=35
@@ -46,53 +44,36 @@ jobs:
       stage: Coverage
       
       before_script:
-        - sudo pip install coverage
-        - sudo pip install coveralls
-        # set this ensure user sites are available
-        - export PYTHONNOUSERSITE=
-        # attempt to get a location where we can store the usercustomize.py file
-        - python -m site
-        - export PYSITEDIR=$(python -m site --user-site)
-        - sudo mkdir -p $PYSITEDIR
-        - sudo touch ${PYSITEDIR}/usercustomize.py
-        - export COVERAGE_FILE=$PWD/.coverage_file
-        # write the usercustomize.py file so all python processes use coverage and know where the config file is
-        - echo "import os" | sudo tee --append ${PYSITEDIR}/usercustomize.py
-        - echo "os.environ['COVERAGE_PROCESS_START'] = '$PWD/.coveragerc'" | sudo tee --append ${PYSITEDIR}/usercustomize.py
-        - echo "import coverage" | sudo tee --append ${PYSITEDIR}/usercustomize.py
-        - echo "coverage.process_startup()" | sudo tee --append ${PYSITEDIR}/usercustomize.py
+        - ./.travis/coverage_install.sh
 
       script: 
+        # setup environment
+        - export COVERAGE_FILE=$PWD/.coverage_file
         - export TOTAL_BUILD_JOBS=8
-        # write the coverage config file
         - export COVERAGE_PROCESS_START=$PWD/.coveragerc
-        - echo "[run]" >> .coveragerc
-        - echo "source = $PWD/src" >> .coveragerc
-        - echo "parallel = True" >> .coveragerc
-        - printf "omit =\n\t*Tests.py\n\tsrc/test_*\n\tsrc/setup.py\n\n" >> .coveragerc
-        - echo "[path] = $PWD" >> .coveragerc
-      # Not including this workaround in the coverage report, because it will result
-      # in constantly changing coverage reports depending on the number of times
-      # the JobTests.py had to run to pass
-      # TODO: figure out how to cover JobTests.py
-      # - n=0; while [[ $n -lt 10 ]]; do coverage run --rcfile=$PWD/.coveragerc runtest.py src/engine/SCons/JobTests.py && break; n=$((n+1)); done; if [ "$n" -gt "9" ]; then false; fi
-      # exclude JobTest.py becuase we already ran that
-        - echo "src/engine/SCons/JobTests.py" > exclude_jobtest
-        - python runtest.py -l -a --exclude-list exclude_jobtest > all_tests
+        
+        # get a list of all tests
+        - python runtest.py -l -a > all_tests
+        
+        # create the selection of tests to use in this build
         - let "start = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * (${BUILD_JOB_NUM} - 1)"; true;
         - let "end = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * ${BUILD_JOB_NUM}"
         - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
+        
+        # run the selected test with coverage
         - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
 
       after_success:
+        # create the report and send to coveralls (linked through github)
         - coverage combine
         - coverage report
         - coveralls --rcfile=$PWD/.coveragerc
 
       env: BUILD_JOB_NUM=1
 
+    # run the same coverage script for each build number
     - <<: *coverage_jobs
       env: BUILD_JOB_NUM=2
     - <<: *coverage_jobs

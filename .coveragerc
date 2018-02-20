@@ -1,0 +1,11 @@
+# check the link below for more information about this config file
+# http://coverage.readthedocs.io/en/latest/config.html#
+[run]
+branch = False
+source = src
+parallel = True
+data_file = .coverage_file
+omit =
+    *Tests.py
+    src/test_*
+    src/setup.py
