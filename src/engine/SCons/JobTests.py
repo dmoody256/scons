@@ -87,6 +87,7 @@ class Task(object):
         self.taskmaster = taskmaster
         self.was_executed = 0
         self.was_prepared = 0
+		
 
     def prepare(self):
         self.was_prepared = 1
@@ -133,11 +134,19 @@ class Task(object):
         self.taskmaster.num_postprocessed = self.taskmaster.num_postprocessed + 1
 
 class RandomTask(Task):
+		
     def _do_something(self):
+		taskmaster.parallel_list[self.i] = 1
         # do something that will take some random amount of time:
         for i in range(random.randrange(0, num_sines, 1)):
             x = math.sin(i)
-        time.sleep(0.01)
+		for i in range(0, num_tasks):
+			if(i == self.i):
+				continue
+			elif(taskmaster.parallel_list[i] == 1):
+				taskmaster.found_parallel = True
+        time.sleep(0.1)
+		taskmaster.parallel_list[self.task_number] = 0
 
 class ExceptionTask(object):
     """A dummy task class for testing purposes."""
@@ -191,6 +200,8 @@ class Taskmaster(object):
         self.num_failed = 0
         self.num_postprocessed = 0
         self.Task = Task
+		self.parallel_list = [0] * num_tasks
+		self.found_parallel = False
         # 'guard' guards 'task_begin_list' and 'task_end_list'
         try:
             import threading
@@ -222,12 +233,7 @@ class Taskmaster(object):
 
     def tasks_were_serial(self):
         "analyze the task order to see if they were serial"
-        serial = 1 # assume the tasks were serial
-        for i in range(num_tasks):
-            serial = serial and (self.begin_list[i]
-                                 == self.end_list[i]
-                                 == (i + 1))
-        return serial
+        return not self.found_parallel
 
     def exception_set(self):
         pass
