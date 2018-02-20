@@ -105,9 +105,19 @@ class Task(object):
         self.taskmaster.guard.acquire()
         self.taskmaster.begin_list.append(self.i)
         self.taskmaster.guard.release()
-
+        
+        # while task is executing, represent this in the parallel_list
+		# and then turn it off
+        self.taskmaster.parallel_list[self.i] = 1
         self._do_something()
-
+        self.taskmaster.parallel_list[self.i] = 0
+		
+        # check if task was executing while another was also executing
+        for j in range(1, self.taskmaster.num_tasks):
+            if(self.taskmaster.parallel_list[j+1] == 1):
+                self.taskmaster.found_parallel = True
+                break
+        
         self.was_executed = 1
 
         self.taskmaster.guard.acquire()
@@ -116,7 +126,7 @@ class Task(object):
 
     def executed(self):
         self.taskmaster.num_executed = self.taskmaster.num_executed + 1
-
+        #print("num exec: " + str(self.taskmaster.num_executed) + " num_task: " + str(self.taskmaster.num_tasks))
         self.taskmaster.test_case.failUnless(self.was_prepared,
                                   "the task wasn't prepared")
         self.taskmaster.test_case.failUnless(self.was_executed,
@@ -133,21 +143,16 @@ class Task(object):
     def postprocess(self):
         self.taskmaster.num_postprocessed = self.taskmaster.num_postprocessed + 1
 
-class RandomTask(Task):
-        
-    def _do_something(self):
-        taskmaster.parallel_list[self.i] = 1
-        # do something that will take some random amount of time:
-        for i in range(random.randrange(0, num_sines, 1)):
-            x = math.sin(i)
-        for i in range(0, num_tasks):
-            if(i == self.i):
-                continue
-            elif(taskmaster.parallel_list[i] == 1):
-                taskmaster.found_parallel = True
-        time.sleep(0.1)
-        taskmaster.parallel_list[self.task_number] = 0
+    def exception_set(self):
+        pass
 
+class RandomTask(Task):
+    def _do_something(self):
+        # do something that will take some random amount of time:
+        for i in range(random.randrange(0, 1000 + num_sines, 1)):
+            x = math.sin(i)
+        time.sleep(0.1)
+        
 class ExceptionTask(object):
     """A dummy task class for testing purposes."""
 
@@ -199,9 +204,10 @@ class Taskmaster(object):
         self.num_executed = 0
         self.num_failed = 0
         self.num_postprocessed = 0
-        self.Task = Task
-        self.parallel_list = [0] * num_tasks
+        self.parallel_list = [0] * (n+1)
         self.found_parallel = False
+        self.Task = Task
+        
         # 'guard' guards 'task_begin_list' and 'task_end_list'
         try:
             import threading
