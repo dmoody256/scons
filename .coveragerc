@@ -4,7 +4,6 @@
 branch = False
 source = src
 parallel = True
-data_file = .coverage_file
 omit =
     *Tests.py
     src/test_*
