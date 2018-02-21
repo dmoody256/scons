@@ -1,6 +1,6 @@
 dist: trusty
 language: python
-
+sudo: required
 install:
     - ./.travis/install.sh
 
