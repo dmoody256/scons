@@ -1,0 +1,9 @@
+test\Clang\clang_default_environment.py
+test\Clang\clang_shared_library.py
+test\Clang\clang_specific_environment.py
+test\Clang\clang_static_library.py
+test\Clang\clangxx_default_environment.py
+test\Clang\clangxx_shared_library.py
+test\Clang\clangxx_specific_environment.py
+test\Clang\clangxx_static_library.py
+

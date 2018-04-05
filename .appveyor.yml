@@ -69,7 +69,8 @@ environment:
 
 build: off
 build_script:
-  - cmd: python runtest.py -l -a > all_tests.txt 
+  - cmd: echo Appveyor SCons CI exlcuding these test: & type .\.appveyor\appveyor_excluded_test.txt
+  - cmd: python runtest.py -l -a --exclude-list .appveyor/appveyor_excluded_test.txt > all_tests.txt 
   - ps: >-
       $TOTAL_BUILD_JOBS = 4;
       $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
