@@ -14,6 +14,7 @@ jobs:
   include:
     - &test_job
       stage: Test
+      if: env(TRAVIS_TEST_BUILD) IS blank
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
@@ -39,7 +40,7 @@ jobs:
 
     - &coverage_jobs
       stage: Coverage
-      
+      if: env(TRAVIS_TEST_BUILD) IS blank
       before_script:
         - sudo pip install coverage
         - sudo pip install coveralls
