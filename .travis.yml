@@ -34,10 +34,10 @@ jobs:
 
     - &test_job
       stage: Test
-      script: 
-        - if ${TRAVIS_DEVELOPMENT_SCRIPT}; then travis_terminate; fi
-        - python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
-      before_script: ./.travis/install.sh
+      script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
+      before_script:
+        - if ${TRAVIS_DEVELOPMENT_SCRIPT}; then travis_terminate; fi 
+        - ./.travis/install.sh
       after_success: skip
       python: 2.7
       env: PYVER=27
@@ -62,6 +62,7 @@ jobs:
     - &coverage_jobs
       stage: Coverage
       before_script:
+        - if ${TRAVIS_DEVELOPMENT_SCRIPT}; then travis_terminate; fi 
         - ./.travis/install.sh
         - sudo pip install coverage
         - sudo pip install coveralls
