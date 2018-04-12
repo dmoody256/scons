@@ -1,9 +1,6 @@
 dist: trusty
 language: python
 
-install:
-    - ./.travis/install.sh
-
 # pypy is not passing, but allow failures for coverage stage to be reached
 matrix:
   allow_failures:
@@ -16,7 +13,7 @@ jobs:
       stage: Test
       if: env(TRAVIS_TEST_BUILD) IS blank
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
-      before_script: skip
+      before_script: ./.travis/install.sh
       after_success: skip
       python: 2.7
       env: PYVER=27
@@ -40,8 +37,9 @@ jobs:
 
     - &coverage_jobs
       stage: Coverage
-      if: env(TRAVIS_TEST_BUILD) IS blank
+      if: NOT (env(TRAVIS_TEST_BUILD) IS present)
       before_script:
+        - ./.travis/install.sh
         - sudo pip install coverage
         - sudo pip install coveralls
         # set this ensure user sites are available
