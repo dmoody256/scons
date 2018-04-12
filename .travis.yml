@@ -1,6 +1,10 @@
 dist: trusty
 language: python
 
+install:
+  - export TRAVIS_TEST_BUILD=$TESTING
+  - echo $TRAVIS_TEST_BUILD
+
 # pypy is not passing, but allow failures for coverage stage to be reached
 matrix:
   allow_failures:
@@ -8,7 +12,7 @@ matrix:
 
 stages:
   - name: Test 
-    if: env(TRAVIS_TEST_BUILD) IS present
+    if: env(TRAVIS_TEST_BUILD)=1
 
 
 jobs:
