@@ -8,7 +8,7 @@ matrix:
 
 stages:
   - name: Test 
-    if: NOT env(TRAVIS_TEST_BUILD) IS present
+    if: env(TRAVIS_TEST_BUILD) IS present
 
 
 jobs:
