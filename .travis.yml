@@ -9,7 +9,7 @@ matrix:
 
 jobs:
   include:
-    if: NOT (env(TRAVIS_TEST_BUILD) IS present)
+    if: env(TRAVIS_TEST_BUILD) IS blank
     - &test_job
       stage: Test
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
