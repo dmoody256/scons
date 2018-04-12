@@ -11,7 +11,7 @@ jobs:
   include:
     - &test_job
       stage: Test
-      if: env(TRAVIS_TEST_BUILD) IS blank
+      if: NOT (env(TRAVIS_TEST_BUILD) IS present)
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
       before_script: ./.travis/install.sh
       after_success: skip
