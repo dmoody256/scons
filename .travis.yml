@@ -1,22 +1,37 @@
 dist: trusty
 language: python
 
-install:
-  - export TRAVIS_TEST_BUILD=$TESTING
-  - echo $TRAVIS_TEST_BUILD
-
 # pypy is not passing, but allow failures for coverage stage to be reached
 matrix:
   allow_failures:
     - python: pypy
 
-stages:
-  - name: Test 
-    if: env(TRAVIS_TEST_BUILD)=1
-
-
 jobs:
   include:
+    - &develop_job
+      stage: Development
+      script: ${TRAVIS_DEVELOPMENT_SCRIPT}
+      before_script: skip
+      after_success: skip
+      python: 2.7
+      env: PYVER=27
+      sudo: required
+
+    - <<: *develop_job
+      python: 3.5
+      env: PYVER=35
+      sudo: required
+
+    - <<: *develop_job
+      python: 3.6
+      env: PYVER=36
+      sudo: required
+
+    - <<: *develop_job
+      python: pypy
+      env: PYVER=pypy
+      sudo: required
+
     - &test_job
       stage: Test
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
