@@ -34,7 +34,9 @@ jobs:
 
     - &test_job
       stage: Test
-      script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
+      script: 
+        - if ${TRAVIS_DEVELOPMENT_SCRIPT}; then travis_terminate; fi
+        - python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
       before_script: ./.travis/install.sh
       after_success: skip
       python: 2.7
@@ -78,6 +80,7 @@ jobs:
         - echo "coverage.process_startup()" | sudo tee --append ${PYSITEDIR}/usercustomize.py
 
       script: 
+        - if ${TRAVIS_DEVELOPMENT_SCRIPT}; then travis_terminate; fi
         - export TOTAL_BUILD_JOBS=8
         # write the coverage config file
         - export COVERAGE_PROCESS_START=$PWD/.coveragerc
