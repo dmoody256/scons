@@ -7,7 +7,7 @@ matrix:
     - python: pypy
 
 stages:
-  - name: Test
+  - name: Test 
     if: env(TRAVIS_TEST_BUILD) IS NOT present
   - name: Coverage
     if: env(TRAVIS_TEST_BUILD) IS NOT present
