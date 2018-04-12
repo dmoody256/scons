@@ -8,6 +8,10 @@ matrix:
 
 stages:
   - name: Test
+    if: env(TRAVIS_TEST_BUILD) IS NOT present
+  - name: Coverage
+    if: env(TRAVIS_TEST_BUILD) IS NOT present
+  - name: Develop
     if: env(TRAVIS_TEST_BUILD) IS present
 
 jobs:
