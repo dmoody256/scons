@@ -8,9 +8,9 @@ matrix:
 
 stages:
   - name: Test 
-    if: env(TRAVIS_TEST_BUILD) IS NOT present
+    if: env(TRAVIS_TEST_BUILD) IS blank
   - name: Coverage
-    if: env(TRAVIS_TEST_BUILD) IS NOT present
+    if: env(TRAVIS_TEST_BUILD) IS blank
   - name: Develop
     if: env(TRAVIS_TEST_BUILD) IS present
 
