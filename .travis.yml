@@ -6,10 +6,12 @@ matrix:
   allow_failures:
     - python: pypy
 
+stages:
+  - name: Test
+    if: env(TRAVIS_TEST_BUILD) IS present
 
 jobs:
   include:
-    if: env(TRAVIS_TEST_BUILD) IS blank
     - &test_job
       stage: Test
       script: python runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
