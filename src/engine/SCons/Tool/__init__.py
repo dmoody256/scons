@@ -912,6 +912,18 @@ def createCFileBuilders(env):
 ##########################################################################
 #  Create common Java builders
 
+def binary_file_wrapper(bin_key):
+
+    def bin_file(target, source, env):
+        if ' ' in env[bin_key]:
+            env[bin_key] = env.File(env[bin_key])
+    def emptyStrfunction(self, target, source, env, executor=None):
+            return ''
+
+    bin_file_action = SCons.Action.FunctionAction( bin_file, {} )
+    bin_file_action.strfunction = emptyStrfunction
+    return bin_file_action
+
 def CreateJarBuilder(env):
     """The Jar builder expects a list of class files
     which it can package into a jar file.
@@ -926,7 +938,9 @@ def CreateJarBuilder(env):
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
         jar_com = SCons.Action.Action('$JARCOM', '$JARCOMSTR')
-        java_jar = SCons.Builder.Builder(action = jar_com,
+        java_jar = SCons.Builder.Builder(action = SCons.Action.ListAction([
+                                            binary_file_wrapper('JAR'), 
+                                            jar_com]),
                                          suffix = '$JARSUFFIX',
                                          src_suffix = '$JAVACLASSSUFFIX',
                                          src_builder = 'JavaClassFile',
@@ -954,7 +968,9 @@ def CreateJavaClassFileBuilder(env):
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
         javac_com = SCons.Action.Action('$JAVACCOM', '$JAVACCOMSTR')
-        java_class_file = SCons.Builder.Builder(action = javac_com,
+        java_class_file = SCons.Builder.Builder(action = SCons.Action.ListAction([
+                                                    binary_file_wrapper('JAVAC'), 
+                                                    javac_com]),
                                                 emitter = {},
                                                 #suffix = '$JAVACLASSSUFFIX',
                                                 src_suffix = '$JAVASUFFIX',
@@ -970,7 +986,9 @@ def CreateJavaClassDirBuilder(env):
     except KeyError:
         fs = SCons.Node.FS.get_default_fs()
         javac_com = SCons.Action.Action('$JAVACCOM', '$JAVACCOMSTR')
-        java_class_dir = SCons.Builder.Builder(action = javac_com,
+        java_class_dir = SCons.Builder.Builder(action = SCons.Action.ListAction([
+                                                    binary_file_wrapper('JAVAC'), 
+                                                    javac_com]),
                                                emitter = {},
                                                target_factory = fs.Dir,
                                                source_factory = fs.Dir)
