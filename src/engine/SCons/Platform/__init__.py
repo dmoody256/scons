@@ -243,8 +243,23 @@ class TempFileMunge(object):
                                source) if self.cmdstr is not None else ''
             # Print our message only if XXXCOMSTR returns an empty string
             if len(cmdstr) == 0 :
-                print("Using tempfile "+native_tmp+" for command line:\n"+
-                      str(cmd[0]) + " " + " ".join(args))
+
+                cmdstr = ("Using tempfile "+native_tmp+" for command line:\n"+
+                    str(cmd[0]) + " " + " ".join(args))
+                    
+                # check if there the user has specified a cmd print function
+                try:
+                    get = env.get
+                except AttributeError:
+                    pass
+                else:
+                    print_func = get('PRINT_CMD_LINE_FUNC')
+
+                # use the default action print cmd line if user did not supply one
+                if not print_func:
+                    SCons.Action._ActionAction.print_cmd_line(self, cmdstr, target, source, env)
+                else:
+                    print_func(cmdstr, target, source, env)
 
         # Store the temporary file command list into the target Node.attributes
         # to avoid creating two temporary files one for print and one for execute.
