@@ -247,6 +247,7 @@ class TempFileMunge(object):
                     str(cmd[0]) + " " + " ".join(args))
                     
                 # check if the user has specified a cmd line print function
+                print_func = None
                 try:
                     get = env.get
                 except AttributeError:
