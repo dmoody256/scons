@@ -257,7 +257,8 @@ class TempFileMunge(object):
 
                 # use the default action cmd line print if user did not supply one
                 if not print_func:
-                    SCons.Action._ActionAction.print_cmd_line(self, cmdstr, target, source, env)
+                    action = SCons.Action._ActionAction()
+                    action.print_cmd_line(cmdstr, target, source, env)
                 else:
                     print_func(cmdstr, target, source, env)
 
