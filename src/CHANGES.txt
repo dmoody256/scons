@@ -10,6 +10,9 @@ RELEASE  VERSION/DATE TO BE FILLED IN LATER
   From John Doe:
 
     - Whatever John Doe did.
+    
+  From Daniel Moody:
+    - Update TempFileMunge class to use PRINT_CMD_LINE_FUNC
 
   From Mats Wichmann:
     - Update some doc examples for Py3: map() now returns an interable
