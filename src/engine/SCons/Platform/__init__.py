@@ -245,22 +245,7 @@ class TempFileMunge(object):
             if len(cmdstr) == 0 :
                 cmdstr = ("Using tempfile "+native_tmp+" for command line:\n"+
                     str(cmd[0]) + " " + " ".join(args))
-                    
-                # check if the user has specified a cmd line print function
-                print_func = None
-                try:
-                    get = env.get
-                except AttributeError:
-                    pass
-                else:
-                    print_func = get('PRINT_CMD_LINE_FUNC')
-
-                # use the default action cmd line print if user did not supply one
-                if not print_func:
-                    action = SCons.Action._ActionAction()
-                    action.print_cmd_line(cmdstr, target, source, env)
-                else:
-                    print_func(cmdstr, target, source, env)
+                self._print_cmd_str(target, source, env, cmdstr)
 
         # Store the temporary file command list into the target Node.attributes
         # to avoid creating two temporary files one for print and one for execute.
@@ -271,6 +256,23 @@ class TempFileMunge(object):
             except AttributeError:
                 pass
         return cmdlist
+
+    def _print_cmd_str(self, target, source, env, cmdstr):
+        # check if the user has specified a cmd line print function
+        print_func = None
+        try:
+            get = env.get
+        except AttributeError:
+            pass
+        else:
+            print_func = get('PRINT_CMD_LINE_FUNC')
+
+        # use the default action cmd line print if user did not supply one
+        if not print_func:
+            action = SCons.Action._ActionAction()
+            action.print_cmd_line(cmdstr, target, source, env)
+        else:
+            print_func(cmdstr, target, source, env)
 
 
 def Platform(name = platform_default()):
