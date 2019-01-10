@@ -1,6 +1,8 @@
 #version: '3.0.1.{build}'
 
-image: Visual Studio 2017
+image: 
+  - Visual Studio 2017
+  - Visual Studio 2015
 shallow_clone: true
 
 cache:
@@ -59,6 +61,15 @@ environment:
     - PYTHON: "C:\\Python37"
       BUILD_JOB_NUM: 4
 
+matrix:
+  exclude:
+    - image: Visual Studio 2015
+      PYTHON: "C:\\Python37"
+    - image: Visual Studio 2015
+      PYTHON: "C:\\Python35"
+    - image: Visual Studio 2015
+      PYTHON: "C:\\Python27"
+      
 
 before_build:
     - ps: dir "C:\Program Files\Git\usr\bin\x*.exe"
