@@ -102,6 +102,7 @@ jobs:
         - coveralls --rcfile=$PWD/.coveragerc
 
       env: BUILD_JOB_NUM=1
+      python: 2.7
 
     - <<: *coverage_jobs
       env: BUILD_JOB_NUM=2
@@ -117,3 +118,30 @@ jobs:
       env: BUILD_JOB_NUM=7
     - <<: *coverage_jobs
       env: BUILD_JOB_NUM=8
+
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=1
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=2
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=3
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=4
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=5
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=6
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=7
+      python: 3.6
+    - <<: *coverage_jobs
+      env: BUILD_JOB_NUM=8
+      python: 3.6
+
+    
