@@ -61,7 +61,7 @@ build_script:
       if ( $Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines };
       if ( $start -eq 0 ){ $start = 1 };
       get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt;
-  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py -f build_tests} else { python runtest.py -j 2 -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
+  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py -f build_tests.txt} else { python runtest.py -j 2 -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
 
 on_success:
   - coverage combine
