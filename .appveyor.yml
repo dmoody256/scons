@@ -22,9 +22,6 @@ environment:
     - PYTHON: "C:\\Python36"
       BUILD_JOB_NUM: 1
       COVERAGE: 1
-    - PYTHON: "C:\\Python36"
-      BUILD_JOB_NUM: 2
-      COVERAGE: 1
 
 
 before_build:
@@ -50,7 +47,7 @@ build_script:
         $env:COVERAGE_FILE = "$($env:APPVEYOR_BUILD_FOLDER)/.coverage_file";
         $usercustomizeText = "import os`r`nos.environ['COVERAGE_PROCESS_START'] = '$($env:COVERAGE_PROCESS_START)'`r`nimport coverage`r`ncoverage.process_startup()";
         $usercustomizeText|Set-Content "$($env:PYSITEDIR)/usercustomize.py";
-        $coveragercFile = "[run]`r`nsource = $($env:APPVEYOR_BUILD_FOLDER)/src`r`nparallel = True`r`nomit =`r`n`t#Tests.py`r`n`tsrc/test_*`r`n`tsrc/setup.py`r`n`r`n[path] = $($env:APPVEYOR_BUILD_FOLDER)"
+        $coveragercFile = "[run]`r`nsource = $($env:APPVEYOR_BUILD_FOLDER)/src`r`nparallel = True`r`nomit =`r`n`t#Tests.py`r`n`tsrc\test_*`r`n`tsrc\setup.py`r`n`r`n[path] = $($env:APPVEYOR_BUILD_FOLDER)"
         $coveragercFile|Set-Content "$env:COVERAGE_PROCESS_START";
       }
   - ps: >-
