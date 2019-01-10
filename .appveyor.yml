@@ -78,11 +78,24 @@ before_build:
           Remove-Item  "C:\Program Files\Git\usr\bin\xsltproc.EXE" -ErrorAction Ignore
         }
     - ps: dir "C:\Program Files\Git\usr\bin\x*.exe"
+    - cmd: python -m pip install -U pip setuptools wheel 
+    - cmd: python -m pip install -U coverage coveralls
 
 build: off
 
 build_script:
   - cmd: python runtest.py -l -a > all_tests.txt
+  - ps: |
+      if (Get-Variable 'COVERAGE' -Scope Global -ErrorAction 'Ignore'){ 
+        $env:COVERAGE_PROCESS_START = "$($env:APPVEYOR_BUILD_FOLDER)/.coveragerc";
+        $env:PYTHONNOUSERSITE = "";
+        $env:PYSITEDIR = python -m site --user-site
+        $env:COVERAGE_FILE = "$($env:APPVEYOR_BUILD_FOLDER)/.coverage_file";
+        $usercustomizeText = "import os`r`nos.environ['COVERAGE_PROCESS_START'] = '$($env:COVERAGE_PROCESS_START)'`r`nimport coverage`r`ncoverage.process_startup()"
+        $usercustomizeText|Set-Content "$($env:PYSITEDIR)/usercustomize.py"
+        $coveragercFile = "[run]`r`nsource = $($env:APPVEYOR_BUILD_FOLDER)/src`r`nparallel = True`r`nomit =`r`n`t#Tests.py`r`n`tsrc/test_*`r`n`tsrc/setup.py`r`n`r`n[path] = $($env:APPVEYOR_BUILD_FOLDER)"
+        $coveragercFile|Set-Content "$env:COVERAGE_PROCESS_START"
+      }
   - ps: >-
       $TOTAL_BUILD_JOBS = 4;
       $Lines = (Get-Content all_tests.txt | Measure-Object -line).Lines;
@@ -91,4 +104,8 @@ build_script:
       if ( $Env:BUILD_JOB_NUM -eq $TOTAL_BUILD_JOBS){ $end = $Lines };
       if ( $start -eq 0 ){ $start = 1 };
       get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt;
-  - cmd: powershell -Command "& { python runtest.py -j 2 -f build_tests.txt; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
+  - cmd: powershell -Command "& { if(Get-Variable 'COVERAGE' -Scope Global -ErrorAction 'Ignore') { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py -f build_tests} else { python runtest.py -j 2 -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
+
+on_success:
+  - coverage combine
+  - coverage report
