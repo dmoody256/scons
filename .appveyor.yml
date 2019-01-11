@@ -14,6 +14,7 @@ cache:
 install:
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;%PATH%"
   - python --version
+  - git -v
   - pip install -U pip setuptools wheel 
   - pip install -U pypiwin32 coverage coveralls
   - set STATIC_DEPS=true & pip install -U lxml
