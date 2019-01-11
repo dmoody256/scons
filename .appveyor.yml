@@ -97,6 +97,7 @@ before_build:
 build: off
 
 build_script:
+  - cmd: git -v
   - cmd: python runtest.py -l -a > all_tests.txt
   # setup coverage is set in environment
   - ps: |
