@@ -1,8 +1,8 @@
 #version: '3.0.1.{build}'
 
 image: 
-  - Visual Studio 2017
   - Visual Studio 2015
+  - Visual Studio 2017
 shallow_clone: true
 
 cache:
@@ -39,27 +39,27 @@ environment:
       BUILD_JOB_NUM: 4
       COVERAGE: 1
 
-    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python36"
       BUILD_JOB_NUM: 1
-    - PYTHON: "C:\\Python35"
+      COVERAGE: 1
+    - PYTHON: "C:\\Python36"
       BUILD_JOB_NUM: 2
-    - PYTHON: "C:\\Python35"
+      COVERAGE: 1
+    - PYTHON: "C:\\Python36"
       BUILD_JOB_NUM: 3
-    - PYTHON: "C:\\Python35"
+      COVERAGE: 1
+    - PYTHON: "C:\\Python36"
       BUILD_JOB_NUM: 4
+      COVERAGE: 1
 
-    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python35"
       BUILD_JOB_NUM: 1
-      COVERAGE: 1
-    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python35"
       BUILD_JOB_NUM: 2
-      COVERAGE: 1
-    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python35"
       BUILD_JOB_NUM: 3
-      COVERAGE: 1
-    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python35"
       BUILD_JOB_NUM: 4
-      COVERAGE: 1
 
     - PYTHON: "C:\\Python37"
       BUILD_JOB_NUM: 1
@@ -122,13 +122,4 @@ build_script:
       get-content all_tests.txt | select -first ($end - $start) -skip ($start - 1) | Out-File -Encoding ASCII build_tests.txt;
   # NOTE: running powershell from cmd on purpose because it formats the output
   # correctly
-  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py -f build_tests.txt} else { python runtest.py -j 2 -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
-
-on_success:
-  - ps: |
-      if ($env:COVERAGE -eq 1)
-      {
-        coverage combine
-        coverage report
-        coveralls --rcfile="$($env:COVERAGE_PROCESS_START)"
-      }
+  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py -f build_tests.txt} else { python runtest.py -j 2 -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { if ($env:COVERAGE -eq 1) { coverage combine; coverage report; coveralls --rcfile="$($env:COVERAGE_PROCESS_START)" }; $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
