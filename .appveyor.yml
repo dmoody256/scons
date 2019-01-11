@@ -14,15 +14,6 @@ cache:
 install:
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;%PATH%"
   - python --version
-  - git -v
-  - pip install -U pip setuptools wheel 
-  - pip install -U pypiwin32 coverage coveralls
-  - set STATIC_DEPS=true & pip install -U lxml
-  - choco install --allow-empty-checksums dmd
-  - choco install --allow-empty-checksums ldc
-  - choco install --allow-empty-checksums swig
-  - choco install --allow-empty-checksums vswhere
-  - choco install --allow-empty-checksums xsltproc
 
 environment:
   COVERAGE: 0
@@ -98,7 +89,7 @@ before_build:
 build: off
 
 build_script:
-  - cmd: git -v
+  - cmd: git --no-pager log -1
   - cmd: python runtest.py -l -a > all_tests.txt
   # setup coverage is set in environment
   - ps: |
