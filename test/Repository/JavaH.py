@@ -37,8 +37,8 @@ python = TestSCons.python
 test = TestSCons.TestSCons()
 
 where_javac, java_version = test.java_where_javac()
-where_java = test.java_where_java()
-where_javah = test.java_where_javah()
+where_java = test.java_where_java(java_version)
+where_javah = test.java_where_javah(java_version)
 
 java = where_java
 javac = where_javac
