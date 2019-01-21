@@ -310,6 +310,7 @@ class TestSCons(TestCommon):
 
         """
         env = self.Environment(ENV, tools=[prog])
+        print("created env")
         if env:
             v = env.subst('$' + var)
             if not v:
@@ -319,9 +320,11 @@ class TestSCons(TestCommon):
             if v != prog:
                 return None
             result = env.WhereIs(prog)
+            print("tried to find " + prog + " and got " + result)
             if result and norm and os.sep != '/':
                 result = result.replace(os.sep, '/')
             return result
+        print("still searching")
         if ENV:
             return self.where_is(prog, ENV['PATH'])
         else:
