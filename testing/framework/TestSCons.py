@@ -322,8 +322,10 @@ class TestSCons(TestCommon):
             if result and norm and os.sep != '/':
                 result = result.replace(os.sep, '/')
             return result
-
-        return self.where_is(prog)
+        if ENV:
+            return self.where_is(prog, ENV['PATH'])
+        else:
+            return self.where_is(prog)
 
     def detect_tool(self, tool, prog=None, ENV=None):
         """
