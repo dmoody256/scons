@@ -319,6 +319,7 @@ class TestSCons(TestCommon):
                 prog = v
             if v != prog:
                 return None
+            print(env['ENV']['PATH'])
             result = env.WhereIs(prog, env['ENV']['PATH'])
             print("tried to find " + prog + " and got " + result)
             if result and norm and os.sep != '/':
