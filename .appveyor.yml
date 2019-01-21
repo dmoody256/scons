@@ -30,3 +30,12 @@ build_script:
       dir "C:/Program Files (x86)/Java/jdk1.6.0/bin"
       dir "C:/Program Files (x86)/Java/jdk1.7.0"
       dir "C:/Program Files (x86)/Java/jdk1.7.0/bin"
+      "C:/Program Files/Java/jdk1.6.0/bin/java.exe" -version
+      "C:/Program Files/Java/jdk1.6.0/bin/javac.exe" -version
+      "C:/Program Files/Java/jdk1.7.0/bin/java.exe" -version
+      "C:/Program Files/Java/jdk1.7.0/bin/javac.exe" -version
+      "C:/Program Files (x86)/Java/jdk1.6.0/bin/java.exe" -version
+      "C:/Program Files (x86)/Java/jdk1.6.0/bin/javac.exe" -version
+      "C:/Program Files (x86)/Java/jdk1.7.0/bin/java.exe" -version
+      "C:/Program Files (x86)/Java/jdk1.7.0/bin/javac.exe" -version
+      python runtest.py test/Repository/Java.py

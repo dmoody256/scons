@@ -39,6 +39,9 @@ test = TestSCons.TestSCons()
 javac, java_version = test.java_where_javac()
 java = test.java_where_java()
 
+print(str(javac))
+print(str(java))
+
 # where_java_home=test.java_where_java_home(java_version)
 os.environ['JAVA_HOME'] = test.java_where_java_home(java_version)
 
