@@ -736,6 +736,7 @@ if sys.platform == 'win32':
                 break
         if not is_List(reject) and not is_Tuple(reject):
             reject = [reject]
+        print("***Searching for " + file)
         for dir in path:
             f = os.path.join(dir, file)
             for ext in pathext:

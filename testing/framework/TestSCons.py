@@ -823,6 +823,7 @@ class TestSCons(TestCommon):
         Return a path to the java executable.
         """
         ENV = self.java_ENV(version)
+        print("Start java.exe search")
         where_java = self.where_is('java', ENV['PATH'])
 
         if not where_java:
@@ -838,6 +839,7 @@ class TestSCons(TestCommon):
         """
         ENV = self.java_ENV(version)
         if self.detect_tool('javac'):
+            print("Start javac.exe search")
             where_javac = self.detect('JAVAC', 'javac', ENV=ENV)
         else:
             where_javac = self.where_is('javac', ENV['PATH'])
