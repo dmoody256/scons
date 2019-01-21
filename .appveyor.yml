@@ -20,9 +20,9 @@ install:
   - cmd: for /F "tokens=*" %%g in ('C:\\%WINPYTHON%\\python.exe -m site --user-base') do (set PYUSERBASESITE=%%g)
   - cmd: for /F "tokens=*" %%g in ('C:\\%WINPYTHON%\\python.exe -m site --user-site') do (set PYSITEDIR=%%g)
   - cmd: "set PATH=%PYUSERBASESITE%;%PYUSERBASESITE%\\%WINPYTHON%\\Scripts;%PYUSERBASESITE%\\Scripts;C:\\%WINPYTHON%;C:\\%WINPYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;C:\\ProgramData\\chocolatey\\bin;%PATH%"
-  - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install --user -U pip setuptools wheel"
-  - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install --user -U pypiwin32 coverage codecov"
-  - cmd: set STATIC_DEPS=true & C:\\%WINPYTHON%\\python.exe -m pip install --user -U lxml
+  - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install -U pip setuptools wheel"
+  - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install -U pypiwin32 coverage codecov"
+  - cmd: set STATIC_DEPS=true & C:\\%WINPYTHON%\\python.exe -m pip install -U lxml
   # install 3rd party tools to test with
   - cmd: choco install --allow-empty-checksums dmd ldc swig vswhere xsltproc
   - cmd: set
