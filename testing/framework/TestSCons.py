@@ -847,7 +847,7 @@ class TestSCons(TestCommon):
             self.skip_test("Could not find Java javac, skipping test(s).\n")
         elif sys.platform == "darwin":
             self.java_mac_check(where_javac, 'javac')
-
+        print("found javac " + where_javac)
         self.run(program = where_javac,
                  arguments = '-version',
                  stderr=None,
