@@ -3,8 +3,8 @@
 image:
   # linux builds disabled for now 
   # - Ubuntu
-  - Visual Studio 2017
   - Visual Studio 2015
+  - Visual Studio 2017
   
   
 cache:
@@ -17,9 +17,8 @@ install:
   ### WINDOWS ###
   # add python and python user-base to path for pip installs
   - cmd: "C:\\%WINPYTHON%\\python.exe --version"
-  - cmd: for /F "tokens=*" %%g in ('C:\\%WINPYTHON%\\python.exe -m site --user-base') do (set PYUSERBASESITE=%%g)
   - cmd: for /F "tokens=*" %%g in ('C:\\%WINPYTHON%\\python.exe -m site --user-site') do (set PYSITEDIR=%%g)
-  - cmd: "set PATH=%PYUSERBASESITE%;%PYUSERBASESITE%\\%WINPYTHON%\\Scripts;%PYUSERBASESITE%\\Scripts;C:\\%WINPYTHON%;C:\\%WINPYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;C:\\ProgramData\\chocolatey\\bin;%PATH%"
+  - cmd: "set PATH=C:\\%WINPYTHON%;C:\\%WINPYTHON%\\Scripts;C:\\cygwin64\\bin;C:\\msys64;C:\\ProgramData\\chocolatey\\bin;%PATH%"
   - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install -U pip setuptools wheel"
   - cmd: "C:\\%WINPYTHON%\\python.exe -m pip install -U pypiwin32 coverage codecov"
   - cmd: set STATIC_DEPS=true & C:\\%WINPYTHON%\\python.exe -m pip install -U lxml
@@ -30,16 +29,18 @@ install:
   ### LINUX ###
   - sh: sudo add-apt-repository -y ppa:deadsnakes/ppa
   # allow the CI to continue even if some pkg in the pkglist may not be up to date
-  - sh: sudo apt-get update || true
+  - sh: sudo apt-get update 
   - sh: sudo apt-get -y install python$PYTHON
   - sh: wget https://bootstrap.pypa.io/get-pip.py
   - sh: sudo -H python$PYTHON get-pip.py
   - sh: which python$PYTHON
   - sh: python$PYTHON --version
   - sh: export PYSITEDIR=$(python$PYTHON -m site --user-site)
-  - sh: python$PYTHON -m pip install --user -U pip setuptools wheel 
-  - sh: python$PYTHON -m pip install --user -U coverage codecov
-  - sh: STATIC_DEPS=true python$PYTHON -m pip install --user -U lxml || true
+  # progress bar removed due to suggestion here:
+  # https://help.appveyor.com/discussions/questions/33317-make-build-continue-even-if-command-fails
+  - sh: python$PYTHON -m pip install --user -U --progress-bar off pip setuptools wheel 
+  - sh: python$PYTHON -m pip install --user -U --progress-bar off coverage codecov 
+  - sh: STATIC_DEPS=true python$PYTHON -m pip install --user -U --progress-bar off lxml
   - sh: ./.travis/install.sh
   # workaround for https://github.com/codecov/codecov-python/pull/188
   - sh: export CI=True
@@ -218,7 +219,7 @@ build_script:
 
   # NOTE: running powershell from cmd on purpose because it formats the output
   # correctly
-  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py --exclude-list exclude_list.txt -f build_tests.txt } else { C:\\%WINPYTHON%\\python.exe runtest.py -j 2 --exclude-list exclude_list.txt -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
+  - cmd: powershell -Command "& { if($env:COVERAGE -eq 1) { coverage run -p --rcfile=$($env:COVERAGE_PROCESS_START) runtest.py --exclude-list exclude_list.txt test/Java/JAR.py } else { C:\\%WINPYTHON%\\python.exe runtest.py -j 2 --exclude-list exclude_list.txt -f build_tests.txt }; if($LastExitCode -eq 2 -Or $LastExitCode -eq 0) { $host.SetShouldExit(0 )} else {$host.SetShouldExit(1)}}"
 
   # unset JAVA_TOOL_OPTIONS because newer java prints this to stderr
   - sh: |
