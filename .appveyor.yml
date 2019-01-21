@@ -3,8 +3,8 @@
 image:
   # linux builds disabled for now 
   # - Ubuntu
-  - Visual Studio 2015
   - Visual Studio 2017
+  - Visual Studio 2015
   
   
 cache:
