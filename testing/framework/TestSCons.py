@@ -309,7 +309,7 @@ class TestSCons(TestCommon):
         Returns: full path to the tool, or None.
 
         """
-        env = self.Environment(ENV)
+        env = self.Environment(ENV, tools=[])
         if env:
             v = env.subst('$' + var)
             if not v:
