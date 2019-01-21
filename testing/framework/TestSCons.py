@@ -718,6 +718,7 @@ class TestSCons(TestCommon):
                     ]
                 java_path = self.paths(patterns) + [env['ENV']['PATH']]
 
+            print("Appending to path" + os.linesep + str(java_path))
             env['ENV']['PATH'] = os.pathsep.join(java_path)
             return env['ENV']
 
