@@ -740,6 +740,7 @@ if sys.platform == 'win32':
             f = os.path.join(dir, file)
             for ext in pathext:
                 fext = f + ext
+                print('WhereIs + ' + str(fext) )
                 if os.path.isfile(fext):
                     try:
                         reject.index(fext)

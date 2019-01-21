@@ -427,7 +427,6 @@ def get_java_install_dirs(platform, version=None):
         # do nothing for now
         pass
     paths=sorted(paths)
-    print("TOOL PATHS: " + str(paths))
    
 
     return paths
