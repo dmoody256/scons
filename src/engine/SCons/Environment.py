@@ -974,18 +974,20 @@ class Base(SubstitutionEnvironment):
                 pass
 
         SCons.Tool.Initializers(self)
-
+        
         if tools is None:
             tools = self._dict.get('TOOLS', None)
             if tools is None:
                 tools = ['default']
         apply_tools(self, tools, toolpath)
+        print("PATH: " + self._dict['ENV']['PATH'])
 
         # Now restore the passed-in and customized variables
         # to the environment, since the values the user set explicitly
         # should override any values set by the tools.
         for key, val in save.items():
             self._dict[key] = val
+        
 
         # Finally, apply any flags to be merged in
         if parse_flags: self.MergeFlags(parse_flags)

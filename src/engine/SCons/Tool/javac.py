@@ -214,6 +214,7 @@ def generate(env):
     if env['PLATFORM'] == 'win32':
         # Ensure that we have a proper path for javac
         paths=get_java_install_dirs(env['PLATFORM'], version=version)
+        print("JAVA paths: " + str(paths))
         javac = SCons.Tool.find_program_path(env, 'javac',
                                              default_paths=paths)
         if javac:
