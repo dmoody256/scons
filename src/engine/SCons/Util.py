@@ -931,6 +931,9 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
 
     if canonicalize:
         newpaths=list(map(canonicalize, newpaths))
+    import traceback
+    for line in traceback.format_stack():
+        print(line.strip())
     print(str(delete_existing))
     if not delete_existing:
         # add old paths to result, then
