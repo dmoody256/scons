@@ -660,6 +660,7 @@ class TestSCons(TestCommon):
         import glob
         result = []
         for p in patterns:
+            p = p.replace("\\", "/")
             result.extend(sorted(glob.glob(p)))
         return result
 
