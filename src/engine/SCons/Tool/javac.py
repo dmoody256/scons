@@ -217,6 +217,7 @@ def generate(env):
         print("JAVA paths: " + str(paths))
         javac = SCons.Tool.find_program_path(env, 'javac',
                                              default_paths=paths)
+        print("JAVA paths: " + env['ENV']['PATH'])
         if javac:
             javac_bin_dir = os.path.dirname(javac)
             print("JAVAC DIR: " + javac_bin_dir )
