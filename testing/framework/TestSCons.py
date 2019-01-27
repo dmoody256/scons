@@ -660,8 +660,7 @@ class TestSCons(TestCommon):
         import glob
         result = []
         for p in patterns:
-            p = p.replace("\\", "/")
-            result.extend(sorted(glob.glob(p)))
+            result.extend(sorted([path.replace("\\", "/") for path in glob.glob(p)]))
         return result
 
     def unlink_sconsignfile(self,name='.sconsign.dblite'):
