@@ -426,7 +426,7 @@ def get_java_install_dirs(platform, version=None):
     else:
         # do nothing for now
         pass
-    paths=sorted(paths)
+    paths=sorted([path.replace("\\", "/") for path in paths])
    
 
     return paths
