@@ -931,7 +931,7 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
 
     if canonicalize:
         newpaths=list(map(canonicalize, newpaths))
-
+    print(str(delete_existing))
     if not delete_existing:
         # add old paths to result, then
         # add new paths if not already present
