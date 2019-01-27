@@ -129,7 +129,7 @@ def generate(env):
         if javah:
             javah_bin_dir = os.path.dirname(javah)
             print("JAVAH DIR: " + javah_bin_dir )
-            env.AppendENVPath('PATH', javah_bin_dir, delete_existing=0)
+            env.AppendENVPath('PATH', javah_bin_dir, delete_existing=1)
 
     env['_JAVAHOUTFLAG']    = JavaHOutFlagGenerator
     env['JAVAH']            = 'javah'

@@ -215,7 +215,7 @@ def generate(env):
         if jar:
             jar_bin_dir = os.path.dirname(jar)
             print("JAR DIR: " + jar_bin_dir )
-            env.AppendENVPath('PATH', jar_bin_dir, delete_existing=0)
+            env.AppendENVPath('PATH', jar_bin_dir, delete_existing=1)
 
     env['JAR']        = 'jar'
     env['JARFLAGS']   = SCons.Util.CLVar('cf')

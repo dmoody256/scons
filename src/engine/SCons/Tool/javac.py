@@ -221,7 +221,7 @@ def generate(env):
         if javac:
             javac_bin_dir = os.path.dirname(javac)
             print("JAVAC DIR: " + javac_bin_dir )
-            env.AppendENVPath('PATH', javac_bin_dir, delete_existing=0)
+            env.AppendENVPath('PATH', javac_bin_dir, delete_existing=1)
 
     env['JAVAINCLUDES'] = get_java_include_paths(env, javac, version)
 
