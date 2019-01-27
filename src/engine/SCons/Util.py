@@ -950,7 +950,7 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
                 continue
             normpath = os.path.normpath(os.path.normcase(path))
             if normpath not in normpaths:
-                print("APPENDING PATH: " + path)
+                print("1APPENDING PATH: " + path)
                 result.append(path)
                 normpaths.append(normpath)
         paths = result
@@ -969,7 +969,7 @@ def AppendPath(oldpath, newpath, sep = os.pathsep,
                 paths.append(path)
                 print("APPENDING PATH: " + path)
                 normpaths.append(normpath)
-        #paths.reverse()
+        paths.reverse()
 
     if is_list:
         return paths
