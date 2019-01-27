@@ -974,7 +974,7 @@ class Base(SubstitutionEnvironment):
                 pass
 
         SCons.Tool.Initializers(self)
-        print("pretool paths: " + str(paths))
+        print("pretool paths: " + self._dict['ENV']['PATH'])
         if tools is None:
             tools = self._dict.get('TOOLS', None)
             if tools is None:
