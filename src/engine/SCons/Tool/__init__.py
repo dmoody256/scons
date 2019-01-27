@@ -1334,7 +1334,7 @@ def find_program_path(env, key_program, default_paths=[]):
     # If that doesn't work try default location for mingw
     save_path = env['ENV']['PATH']
     for p in default_paths:
-        env.AppendENVPath('PATH', p)
+        env.AppendENVPath('PATH', p, delete_existing=0)
     path = env.WhereIs(key_program)
     if not path:
         env['ENV']['PATH'] = save_path
