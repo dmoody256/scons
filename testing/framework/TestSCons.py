@@ -309,7 +309,7 @@ class TestSCons(TestCommon):
         Returns: full path to the tool, or None.
 
         """
-        env = self.Environment(ENV, tools=[prog])
+        env = self.Environment(ENV)
         print("created env")
         if env:
             v = env.subst('$' + var)
@@ -321,16 +321,12 @@ class TestSCons(TestCommon):
                 return None
             print(ENV['PATH'])
             print(env['ENV']['PATH'])
-            result = env.WhereIs(prog, env['ENV']['PATH'])
+            result = env.WhereIs(prog)
             print("tried to find " + prog + " and got " + result)
             if result and norm and os.sep != '/':
                 result = result.replace(os.sep, '/')
             return result
-        print("still searching")
-        if ENV:
-            return self.where_is(prog, ENV['PATH'])
-        else:
-            return self.where_is(prog)
+        return self.where_is(prog)
 
     def detect_tool(self, tool, prog=None, ENV=None):
         """
