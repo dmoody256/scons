@@ -214,6 +214,7 @@ def generate(env):
                                              default_paths=get_java_install_dirs(env['PLATFORM']))
         if jar:
             jar_bin_dir = os.path.dirname(jar)
+            print("JAR DIR: " + jar_bin_dir )
             env.AppendENVPath('PATH', jar_bin_dir, delete_existing=0)
 
     env['JAR']        = 'jar'
