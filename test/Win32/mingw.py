@@ -148,6 +148,7 @@ test.write('header/resource2.h', '''
 # we'd like for this test to pass once this bug is fixed, so match anything at all
 # that comes out of stderr:
 test.run(arguments='test.exe', stderr='.*')
+print(test.stdout())
 # ensure the source def for cshared.def got used, and there wasn't a target def for chshared.dll:
 test.fail_test(test.stdout().find('cshared.def') == -1)
 test.fail_test(test.stdout().find('-Wl,--output-def,cshared.def') != -1)
