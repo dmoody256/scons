@@ -61,6 +61,7 @@ test.subdir('header')
 test.write('SConstruct',"""
 env=Environment(tools=['mingw'])
 assert env['CC'] == 'gcc'
+print(env['ENV']['PATH'])
 env.StaticLibrary('static', 'static.cpp')
 env.SharedLibrary('shared', 'shared.cpp')
 env.SharedLibrary('cshared', ['cshared.c', 'cshared.def'], WINDOWS_INSERT_DEF=1)
