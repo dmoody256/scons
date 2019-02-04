@@ -34,10 +34,13 @@ selection method.
 __revision__ = "__FILE__ __REVISION__ __DATE__ __DEVELOPER__"
 
 import os.path
+import sys
 
 import SCons.Action
 import SCons.Tool
 import SCons.Util
+from SCons.Platform.mingw import MINGW_DEFAULT_PATHS
+from SCons.Platform.cygwin import CYGWIN_DEFAULT_PATHS
 
 LexAction = SCons.Action.Action("$LEXCOM", "$LEXCOMSTR")
 
@@ -64,10 +67,34 @@ def lexEmitter(target, source, env):
                 target.append(fileName)
     return (target, source)
 
+def get_lex_path(env, append=False):
+    """
+    Find the a path containing the lex or flex binaries. If a construction 
+    environment is passed in then append the path to the ENV PATH.
+    """
+    lex = SCons.Tool.find_program_path(env, 'lex', default_paths=MINGW_DEFAULT_PATHS + CYGWIN_DEFAULT_PATHS )
+    if lex:
+        if append:
+            lex_bin_dir = os.path.dirname(lex)
+            env.AppendENVPath('PATH', lex_bin_dir)
+        return lex
+
+    flex = SCons.Tool.find_program_path(env, 'flex', default_paths=MINGW_DEFAULT_PATHS + CYGWIN_DEFAULT_PATHS )
+    if flex:
+        if append:
+            flex_bin_dir = os.path.dirname(flex)
+            env.AppendENVPath('PATH', flex_bin_dir)
+        return flex
+    else:
+        SCons.Warnings.Warning('lex tool requested, but lex or flex binary not found in ENV PATH')
+
+
 def generate(env):
     """Add Builders and construction variables for lex to an Environment."""
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
 
+    if sys.platform == 'win32':
+        get_lex_path(env, append=True)
     # C
     c_file.add_action(".l", LexAction)
     c_file.add_emitter(".l", lexEmitter)
@@ -83,12 +110,15 @@ def generate(env):
     cxx_file.add_action(".ll", LexAction)
     cxx_file.add_emitter(".ll", lexEmitter)
 
-    env["LEX"]      = env.Detect("flex") or "lex"
+    env["LEX"] = env.Detect("flex") or "lex"
     env["LEXFLAGS"] = SCons.Util.CLVar("")
     env["LEXCOM"] = "$LEX $LEXFLAGS -t $SOURCES > $TARGET"
 
 def exists(env):
-    return env.Detect(["flex", "lex"])
+    if sys.platform == 'win32':
+        return get_lex_path(env)
+    else:
+        return env.Detect(["flex", "lex"])
 
 # Local Variables:
 # tab-width:4
