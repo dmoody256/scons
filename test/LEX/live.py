@@ -51,11 +51,10 @@ if sys.platform == 'win32':
 test.file_fixture('wrapper.py')
 
 test.write('SConstruct', """
-foo = Environment(tools=['default', 'mingw'])
+foo = Environment()
 lex = foo.Dictionary('LEX')
 bar = Environment(LEX = r'%(_python_)s wrapper.py ' + lex,
-                  LEXFLAGS = '-b',
-                  tools=['default', 'mingw'])
+                  LEXFLAGS = '-b')
 foo.Program(target = 'foo', source = 'foo.l')
 bar.Program(target = 'bar', source = 'bar.l')
 """ % locals())

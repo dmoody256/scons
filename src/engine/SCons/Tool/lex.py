@@ -94,7 +94,9 @@ def generate(env):
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
 
     if sys.platform == 'win32':
-        get_lex_path(env, append=True)
+        if(get_lex_path(env, append=True)):
+            SCons.Tool.Tool('mingw')(env)
+
     # C
     c_file.add_action(".l", LexAction)
     c_file.add_emitter(".l", lexEmitter)
