@@ -54,10 +54,10 @@
 
     <corpauthor>Steven Knight and the SCons Development Team</corpauthor>
 
-    <pubdate>2004 - 2018</pubdate>
+    <pubdate>2004 - 2019</pubdate>
 
     <copyright>
-      <year>2004 - 2018</year>
+      <year>2004 - 2019</year>
       <holder>The SCons Foundation</holder>
     </copyright>
 
@@ -274,7 +274,7 @@ scons
 <para>will build all target files in or below the current directory.
 Explicit default targets
 (to be built when no targets are specified on the command line)
-may be defined the SConscript file(s)
+may be defined in the SConscript file(s)
 using the
 <emphasis role="bold">Default()</emphasis>
 function, described below.</para>
