@@ -51,7 +51,7 @@ f3 = env.SharedObject('f3.c')
 if ARGUMENTS.get('PROGRAM'):
     lib = env.SharedLibrary(target = 'foo',
                             source = f1 + f2 + f3,
-                            WINDOWS_INSERT_DEF = 1,  LINKFLAGS='-install_name @executable_path/foo.dylib')
+                            WINDOWS_INSERT_DEF = 1,  LINKFLAGS='-install_name @executable_path/libfoo.dylib')
     env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'])
 """  )
 
