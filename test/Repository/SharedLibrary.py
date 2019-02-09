@@ -44,7 +44,7 @@ opts = '-Y ' + test.workpath('repository')
 
 #
 test.write(['repository', 'SConstruct'], """\
-env = Environment(tools=['default', 'clang'])
+env = Environment()
 f1 = env.SharedObject('f1.c')
 f2 = env.SharedObject('f2.c')
 f3 = env.SharedObject('f3.c')
@@ -52,8 +52,8 @@ if ARGUMENTS.get('PROGRAM'):
     lib = env.SharedLibrary(target = 'foo',
                             source = f1 + f2 + f3,
                             WINDOWS_INSERT_DEF = 1,  LINKFLAGS='-install_name %s/foo.dylib')
-    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'], RPATH=['%s'])
-""" % (test.workpath('work'), test.workpath('work')  ))
+    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'])
+""" % (test.workpath('work')  ))
 
 for fx in ['1', '2', '3']:
     test.write(['repository', 'f%s.c' % (fx)], r"""
