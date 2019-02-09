@@ -16,7 +16,7 @@ jobs:
     - &test_job
       stage: Test
       script: 
-        - python runtest.py test/Repository/ShardLibrary.py
+        - python runtest.py test/Repository/SharedLibrary.py
       before_script: skip
       after_success: skip
       
