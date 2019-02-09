@@ -52,7 +52,7 @@ if ARGUMENTS.get('PROGRAM'):
     lib = env.SharedLibrary(target = 'foo',
                             source = f1 + f2 + f3,
                             WINDOWS_INSERT_DEF = 1,  LINKFLAGS='-install_name @rpath/libfoo.dylib')
-    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'], RPATH=['%s'])
+    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'], LINKFLAGS='-rpath %s'])
 """  % (test.workpath('work')) )
 
 for fx in ['1', '2', '3']:
