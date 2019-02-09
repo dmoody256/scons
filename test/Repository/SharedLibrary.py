@@ -52,8 +52,8 @@ if ARGUMENTS.get('PROGRAM'):
     lib = env.SharedLibrary(target = 'foo',
                             source = f1 + f2 + f3,
                             WINDOWS_INSERT_DEF = 1)
-    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'])
-""")
+    env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'], RPATH=%s)
+""" % (test.workpath('work')))
 
 for fx in ['1', '2', '3']:
     test.write(['repository', 'f%s.c' % (fx)], r"""
@@ -109,13 +109,6 @@ test.run(chdir='work',
          match=TestSCons.match_re_dotall)
 
 # Run the program and verify that the library worked
-if os.name == 'posix':
-    if sys.platform[:6] == 'darwin':
-        os.environ['DYLD_LIBRARY_PATH'] = test.workpath('work')
-    else:
-        os.environ['LD_LIBRARY_PATH'] = test.workpath('work')
-if sys.platform.find('irix') != -1:
-    os.environ['LD_LIBRARYN32_PATH'] = test.workpath('work')
 
 test.run(program = test.workpath('work', 'prog'),
          stdout = "f1.c\nf2.c\nf3.c\nprog.c\n")
