@@ -18,9 +18,5 @@ jobs:
       script: python runtest.py test/Repository/ShardLibrary.py
       before_script: skip
       after_success: skip
-      python: 2.7
-      env: 
-        - PYVER=27
-        - PYTHON=2.7
-      sudo: required
+      python: 3.7
       
