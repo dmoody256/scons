@@ -44,7 +44,7 @@ opts = '-Y ' + test.workpath('repository')
 
 #
 test.write(['repository', 'SConstruct'], """\
-env = Environment(tools=['clang'])
+env = Environment(tools=['default', 'clang'])
 f1 = env.SharedObject('f1.c')
 f2 = env.SharedObject('f2.c')
 f3 = env.SharedObject('f3.c')
