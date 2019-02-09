@@ -15,7 +15,9 @@ jobs:
   include:
     - &test_job
       stage: Test
-      script: python runtest.py test/Repository/ShardLibrary.py
+      script: 
+        - brew install python
+        - python runtest.py test/Repository/ShardLibrary.py
       before_script: skip
       after_success: skip
       
