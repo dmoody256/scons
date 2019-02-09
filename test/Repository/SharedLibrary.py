@@ -53,7 +53,7 @@ if ARGUMENTS.get('PROGRAM'):
                             source = f1 + f2 + f3,
                             WINDOWS_INSERT_DEF = 1,  LINKFLAGS='-install_name @executable_path/foo.dylib')
     env.Program(target='prog', source='prog.c', LIBS='foo', LIBPATH=['.'])
-""" % (test.workpath('work')  ))
+"""  )
 
 for fx in ['1', '2', '3']:
     test.write(['repository', 'f%s.c' % (fx)], r"""
