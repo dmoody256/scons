@@ -11,8 +11,6 @@ addons:
 os:
   - linux
 
-install:
-    - ./.travis/install.sh
 
 # pypy is not passing atm, but still report build success for now
 # allow coverage to fail, so we can still do testing for all platforms
@@ -116,7 +114,7 @@ jobs:
         - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
-        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f test/LEX || if [[ $? == 2 ]]; then true; else false; fi
+        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py test/LEX || if [[ $? == 2 ]]; then true; else false; fi
         
       after_script:
         - coverage combine
