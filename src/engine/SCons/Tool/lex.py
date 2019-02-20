@@ -41,6 +41,7 @@ import SCons.Tool
 import SCons.Util
 from SCons.Platform.mingw import MINGW_DEFAULT_PATHS
 from SCons.Platform.cygwin import CYGWIN_DEFAULT_PATHS
+from SCons.Platform.win32 import CHOCO_DEFAULT_PATH
 
 LexAction = SCons.Action.Action("$LEXCOM", "$LEXCOMSTR")
 
@@ -74,10 +75,13 @@ def get_lex_path(env, append_paths=False):
     """
     # save existing path to reset if we don't want to append any paths
     envPath = env['ENV']['PATH']
-    bins = ['lex', 'flex']
+    bins = ['win_flex', 'lex', 'flex']
 
     for prog in bins:
-        bin_path = SCons.Tool.find_program_path(env, prog, default_paths=MINGW_DEFAULT_PATHS + CYGWIN_DEFAULT_PATHS )
+        bin_path = SCons.Tool.find_program_path(
+            env, 
+            prog, 
+            default_paths=CHOCO_DEFAULT_PATH + MINGW_DEFAULT_PATHS + CYGWIN_DEFAULT_PATHS )
         if bin_path:
             if not append_paths:
                 env['ENV']['PATH'] = envPath
@@ -91,9 +95,6 @@ def get_lex_path(env, append_paths=False):
 def generate(env):
     """Add Builders and construction variables for lex to an Environment."""
     c_file, cxx_file = SCons.Tool.createCFileBuilders(env)
-
-    if sys.platform == 'win32':
-        get_lex_path(env, append_paths=True)
 
     # C
     c_file.add_action(".l", LexAction)
@@ -109,10 +110,17 @@ def generate(env):
     # C++
     cxx_file.add_action(".ll", LexAction)
     cxx_file.add_emitter(".ll", lexEmitter)
-    
-    env["LEX"] = env.Detect("flex") or "lex"
-    env["LEXFLAGS"] = SCons.Util.CLVar("")
-    env["LEXCOM"] = "$LEX $LEXFLAGS -t $SOURCES > $TARGET"
+
+    if sys.platform == 'win32':
+        get_lex_path(env, append_paths=True)
+        env["LEX"] = env.Detect("win_flex") or env.Detect("flex") or "lex"
+            
+        env["LEXUNISTD"] = SCons.Util.CLVar("--nounistd")
+        env["LEXCOM"] = "$LEX $LEXUNISTD $LEXFLAGS -t $SOURCES > $TARGET"
+    else:
+        env["LEX"] = env.Detect("flex") or "lex"
+        env["LEXFLAGS"] = SCons.Util.CLVar("")
+        env["LEXCOM"] = "$LEX $LEXFLAGS -t $SOURCES > $TARGET"
 
 def exists(env):
     if sys.platform == 'win32':

@@ -37,29 +37,18 @@ _python_ = TestSCons._python_
 
 test = TestSCons.TestSCons()
 
-lex = test.where_is('lex') or test.where_is('flex')
+lex = test.where_is('win_flex') or test.where_is('lex') or test.where_is('flex')
 
 if not lex:
     test.skip_test('No lex or flex found; skipping test.\n')
 
-tools = "'default'"
-if sys.platform == 'win32':
-    # make sure mingw is installed on win32
-    if not test.where_is('gcc'):
-        test.skip_test('No mingw on windows; skipping test.\n')
-    # lex on win32 has a dependencies on mingw for unix headers
-    # so add it as a tool to the environment.
-    tools += ", 'mingw'"
-
-
 test.file_fixture('wrapper.py')
 
 test.write('SConstruct', """
-foo = Environment(tools=[%(tools)s])
+foo = Environment()
 lex = foo.Dictionary('LEX')
 bar = Environment(LEX = r'%(_python_)s wrapper.py ' + lex,
-                  LEXFLAGS = '-b',
-                  tools=[%(tools)s])
+                  LEXFLAGS = '-b')
 foo.Program(target = 'foo', source = 'foo.l')
 bar.Program(target = 'bar', source = 'bar.l')
 """ % locals())
