@@ -25,29 +25,30 @@
 __revision__ = "__FILE__ __REVISION__ __DATE__ __DEVELOPER__"
 
 """
-Test LEX and LEXFLAGS with a live lex.
+Test Environments are functional and return None when no lex tool is found.
 """
 
-import sysconfig
 import TestSCons
-
-_exe = TestSCons._exe
-_python_ = TestSCons._python_
 
 test = TestSCons.TestSCons()
 
 test.write('SConstruct', """
 import SCons
+
 def no_lex(env, key_program, default_paths=[]):
     return None
 
+class TestEnvironment(SCons.Environment.Environment):
+    def Detect(self, progs):
+        return None
+
 SCons.Tool.find_program_path = no_lex
 
-foo = Environment(tools=['default', 'lex'])
+foo = TestEnvironment(tools=['default', 'lex'])
 print(foo.Dictionary('LEX'))
 """ % locals())
 
-test.run(arguments = '-Q -s', stdout = 'lex\n' )
+test.run(arguments = '-Q -s', stdout = 'None\n' )
 
 test.pass_test()
 

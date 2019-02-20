@@ -112,12 +112,11 @@ def generate(env):
 
     if sys.platform == 'win32':
         get_lex_path(env, append_paths=True)
-        env["LEX"] = env.Detect("win_flex") or env.Detect("flex") or "lex"
-            
+        env["LEX"] = env.Detect(['win_flex', 'lex', 'flex'])
         env["LEXUNISTD"] = SCons.Util.CLVar("--nounistd")
         env["LEXCOM"] = "$LEX $LEXUNISTD $LEXFLAGS -t $SOURCES > $TARGET"
     else:
-        env["LEX"] = env.Detect("flex") or "lex"
+        env["LEX"] = env.Detect(["flex", "lex"])
         env["LEXFLAGS"] = SCons.Util.CLVar("")
         env["LEXCOM"] = "$LEX $LEXFLAGS -t $SOURCES > $TARGET"
 
