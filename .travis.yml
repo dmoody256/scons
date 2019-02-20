@@ -116,7 +116,7 @@ jobs:
         - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
-        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
+        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f test/LEX || if [[ $? == 2 ]]; then true; else false; fi
         
       after_script:
         - coverage combine
@@ -132,45 +132,4 @@ jobs:
         - PYVER=27
         - PYTHON=2.7
         - BUILD_JOB_NUM=1
-
-    - <<: *coverage_jobs
-      env: 
-        - PYVER=27
-        - PYTHON=2.7
-        - BUILD_JOB_NUM=2
-    - <<: *coverage_jobs
-      env: 
-        - PYVER=27
-        - PYTHON=2.7
-        - BUILD_JOB_NUM=3
-    - <<: *coverage_jobs
-      env: 
-        - PYVER=27
-        - PYTHON=2.7
-        - BUILD_JOB_NUM=4
-
-    - <<: *coverage_jobs
-      python: 3.6
-      env: 
-        - PYVER=36
-        - PYTHON=3.6
-        - BUILD_JOB_NUM=1
-    - <<: *coverage_jobs
-      python: 3.6
-      env: 
-        - PYVER=36
-        - PYTHON=3.6
-        - BUILD_JOB_NUM=2
-    - <<: *coverage_jobs
-      python: 3.6
-      env: 
-        - PYVER=36
-        - PYTHON=3.6
-        - BUILD_JOB_NUM=3
-    - <<: *coverage_jobs
-      python: 3.6
-      env: 
-        - PYVER=36
-        - PYTHON=3.6
-        - BUILD_JOB_NUM=4
 
