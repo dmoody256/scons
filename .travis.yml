@@ -48,7 +48,7 @@ jobs:
       stage: Test
       script: 
         - echo "" > build_tests
-        - for i in {1..800}; do python runtest.py -l test/Docbook/dependencies/xinclude/xinclude.py >> build_tests; done
+        - for i in {1..800}; do python runtest.py -l test/Dir/source.py >> build_tests; done
         - python runtest.py -f build_tests -t -j 2 || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
@@ -133,7 +133,7 @@ jobs:
         - if (( ${start} == 0 )); then start=1; fi
         - sed -n ${start},${end}p all_tests > build_tests
         - echo "" > build_tests
-        - for i in {1..800}; do python runtest.py -l test/Docbook/dependencies/xinclude/xinclude.py >> build_tests; done
+        - for i in {1..800}; do python runtest.py -l test/Dir/source.py >> build_tests; done
         - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f build_tests -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
       after_script:
