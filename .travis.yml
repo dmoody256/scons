@@ -49,34 +49,20 @@ jobs:
       before_script: skip
       after_success: skip
       python: pypy3
-      env:
-        - PYVER=pypy3
-        - PYTHON=pypy3
+    
 
     - <<: *test_job
       python: 3.5
-      env:
-        - PYVER=35
-        - PYTHON=3.5
-
+    
     - <<: *test_job
       python: 3.6
-      env:
-        - PYVER=36
-        - PYTHON=3.6
-
+    
     - <<: *test_job
       python: 3.7
-      env:
-        - PYVER=37
-        - PYTHON=3.7
       dist: xenial  # required for Python >= 3.7
 
     - <<: *test_job
       python: 3.8
-      env:
-        - PYVER=38
-        - PYTHON=3.8
       dist: bionic  # required for Python >= 3.8
 
 
@@ -97,7 +83,7 @@ jobs:
         - export PYTHONNOUSERSITE=
         # attempt to get a location where we can store the usercustomize.py file
         - python -m site
-#        - export PYSITEDIR=$(python -m site --user-site)
+#       - export PYSITEDIR=$(python -m site --user-site)
         - export PYSITEDIR=$(python -c "import sys; print(sys.path[-1])")
         - mkdir -p $PYSITEDIR
         # write the usercustomize.py file so all python processes use coverage and know where the config file is
@@ -107,7 +93,6 @@ jobs:
         - echo "coverage.process_startup()" | tee --append ${PYSITEDIR}/sitecustomize.py
 
       script:
-        - export TOTAL_BUILD_JOBS=1
         # write the coverage config file
         - export COVERAGE_PROCESS_START=$PWD/.coveragerc
         - echo "[run]" >> $PWD/.coveragerc
@@ -118,14 +103,7 @@ jobs:
         - echo "source = $PWD" >> .coveragerc
         - echo "[report]" >> .coveragerc
         - printf "omit =\n\t*Tests.py\n\tsrc/test_*\n\tsrc/setup.py\n\n" >> .coveragerc
-        # get a list of all the tests to split them up
-        - python runtest.py -l -a > all_tests
-        - let "start = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * (${BUILD_JOB_NUM} - 1)"; true;
-        - let "end = ($(wc -l < all_tests) / ${TOTAL_BUILD_JOBS}) * ${BUILD_JOB_NUM}"
-        - if (( ${BUILD_JOB_NUM} == ${TOTAL_BUILD_JOBS} )); then end=$(wc -l < all_tests); fi
-        - if (( ${start} == 0 )); then start=1; fi
-        - sed -n ${start},${end}p all_tests > build_tests
-        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -f build_tests || if [[ $? == 2 ]]; then true; else false; fi
+        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
 
       after_script:
         - coverage combine
@@ -136,8 +114,3 @@ jobs:
         # make it easy to re-enable
         #- python$PYTHON -m pip install --user -U coveralls
         #- coveralls --rcfile=$PWD/.coveragerc
-
-      env:
-        - PYVER=37
-        - PYTHON=3.7
-        - BUILD_JOB_NUM=1
