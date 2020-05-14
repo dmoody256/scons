@@ -43,28 +43,6 @@ jobs:
     - python: pypy3
     - stage: Coverage
   include:
-    - &test_job
-      stage: Test
-      script: python runtest.py -a -t -j 2 || if [[ $? == 2 ]]; then true; else false; fi
-      before_script: skip
-      after_success: skip
-      python: pypy3
-    
-
-    - <<: *test_job
-      python: 3.5
-    
-    - <<: *test_job
-      python: 3.6
-    
-    - <<: *test_job
-      python: 3.7
-      dist: xenial  # required for Python >= 3.7
-
-    - <<: *test_job
-      python: 3.8
-      dist: bionic  # required for Python >= 3.8
-
 
     - &coverage_jobs
       stage: Coverage
@@ -90,10 +68,13 @@ jobs:
         - echo "$PYSITEDIR"
         # write the usercustomize.py file so all python processes use coverage and know where the config file is
         - touch "${PYSITEDIR}/sitecustomize.py"
+        - echo "print('start!!!')" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "import os" |  tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "os.environ['COVERAGE_PROCESS_START'] = '$PWD/.coveragerc'" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "import coverage" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "coverage.process_startup()" | tee --append "${PYSITEDIR}/sitecustomize.py"
+        - echo "print('end!!!')" | tee --append "${PYSITEDIR}/sitecustomize.py"
+        - cat "${PYSITEDIR}/sitecustomize.py"
         # write the coverage config file
         - echo "[run]" >> "$PWD/.coveragerc"
         - echo "source = $PWD/src" >> "$PWD/.coveragerc"
@@ -103,9 +84,10 @@ jobs:
         - echo "source = $PWD" >> "$PWD/.coveragerc"
         - echo "[report]" >> "$PWD/.coveragerc"
         - printf "omit =\n\t*Tests.py\n\tsrc/test_*\n\tsrc/setup.py\n\n" >> "$PWD/.coveragerc"
+        - cat "$PWD/.coveragerc"
 
       script:
-        - coverage run -p --rcfile=$PWD/.coveragerc runtest.py -a || if [[ $? == 2 ]]; then true; else false; fi
+        - coverage run -p --rcfile="$PWD/.coveragerc" runtest.py test/Parallel/failed-build.py || if [[ $? == 2 ]]; then true; else false; fi
 
       after_script:
         - coverage combine
