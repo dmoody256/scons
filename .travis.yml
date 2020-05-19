@@ -84,13 +84,13 @@ jobs:
         - cat "${PYSITEDIR}/sitecustomize.py"
         # write the coverage config file
         - echo "[run]" >> "$PWD/.coveragerc"
-        - echo "source = $PWD/SCons" >> "$PWD/.coveragerc"
+        - echo "source = $PWD" >> "$PWD/.coveragerc"
         - echo "parallel = True" >> "$PWD/.coveragerc"
-        - echo "omit = *Tests.py" >> "$PWD/.coveragerc"
+        - printf "omit =\n\t*Tests.py\n\tsrc\n\ttest\n\ttesting\n\n" >> "$PWD/.coveragerc"
         - echo "[path]" >> "$PWD/.coveragerc"
         - echo "source = $PWD" >> "$PWD/.coveragerc"
         - echo "[report]" >> "$PWD/.coveragerc"
-        - echo "omit = *Tests.py" >> "$PWD/.coveragerc"
+        - printf "omit =\n\t*Tests.py\n\tsrc\n\ttest\n\ttesting\n\n" >> "$PWD/.coveragerc"
         - cat "$PWD/.coveragerc"
 
       script:
