@@ -72,11 +72,13 @@ jobs:
         # setup sitecustomize so we can make all subprocess start coverage
         - export PYSITEDIR=$(python -c "import sys; print(sys.path[-1])")
         - export COVERAGE_PROCESS_START="$PWD/.coveragerc"
+        - export COVERAGE_FILE="$PWD/.coverage"
         - mkdir -p "$PYSITEDIR"
         - echo "$PYSITEDIR"
         - touch "${PYSITEDIR}/sitecustomize.py"
         - echo "import os" |  tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "os.environ['COVERAGE_PROCESS_START'] = '$PWD/.coveragerc'" | tee --append "${PYSITEDIR}/sitecustomize.py"
+        - echo "os.environ['COVERAGE_FILE'] = '$PWD/.coverage'" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "import coverage" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - echo "coverage.process_startup()" | tee --append "${PYSITEDIR}/sitecustomize.py"
         - cat "${PYSITEDIR}/sitecustomize.py"
