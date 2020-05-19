@@ -72,7 +72,7 @@ jobs:
         # setup sitecustomize so we can make all subprocess start coverage
         - export PYSITEDIR=$(python -c "import sys; print(sys.path[-1])")
         - export COVERAGE_PROCESS_START="$PWD/.coveragerc"
-        - export COVERAGE_FILE="$PWD/.coverage"
+        - export COVERAGE_FILE="$PWD/SCons/.coverage"
         - mkdir -p "$PYSITEDIR"
         - echo "$PYSITEDIR"
         - touch "${PYSITEDIR}/sitecustomize.py"
@@ -84,11 +84,11 @@ jobs:
         - cat "${PYSITEDIR}/sitecustomize.py"
         # write the coverage config file
         - echo "[run]" >> "$PWD/.coveragerc"
-        - echo "source = SCons" >> "$PWD/.coveragerc"
+        - echo "source = $PWD/SCons" >> "$PWD/.coveragerc"
         - echo "parallel = True" >> "$PWD/.coveragerc"
         - echo "omit = *Tests.py" >> "$PWD/.coveragerc"
         - echo "[path]" >> "$PWD/.coveragerc"
-        - echo "source = ." >> "$PWD/.coveragerc"
+        - echo "source = $PWD/SCons" >> "$PWD/.coveragerc"
         - echo "[report]" >> "$PWD/.coveragerc"
         - echo "omit = *Tests.py" >> "$PWD/.coveragerc"
         - cat "$PWD/.coveragerc"
@@ -98,6 +98,6 @@ jobs:
 
       after_script:
         - coverage combine
-        - coverage report
-        - coverage xml -o coverage_xml.xml
+        - coverage -i report
+        - coverage xml -i -o coverage_xml.xml
         - codecov -X gcov --file coverage_xml.xml
