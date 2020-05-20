@@ -2,9 +2,7 @@
 
 image:
   # linux builds done in Travis CI for now
-  - Visual Studio 2015
   - Visual Studio 2017
-  - Visual Studio 2019
 
 cache:
   - downloads -> appveyor.yml
@@ -21,43 +19,8 @@ install:
 # split builds into sets of four jobs due to appveyor per-job time limit
 environment:
   matrix:
-    - WINPYTHON: "Python35"
-      COVERAGE: 0
-
     - WINPYTHON: "Python36"
       COVERAGE: 1
-
-    - WINPYTHON: "Python37"
-      COVERAGE: 0
-
-    - WINPYTHON: "Python38"
-      COVERAGE: 0
-
-# remove sets of build jobs based on criteria below
-# to fine tune the number and platforms tested
-matrix:
-  exclude:
-    # test python 3.5 on Visual Studio 2015 image
-    - image: Visual Studio 2015
-      WINPYTHON: "Python36"
-    - image: Visual Studio 2015
-      WINPYTHON: "Python37"
-    - image: Visual Studio 2015
-      WINPYTHON: "Python38"
-
-    # test python 3.8 on Visual Studio 2017 image
-    - image: Visual Studio 2017
-      WINPYTHON: "Python35"
-    - image: Visual Studio 2017
-      WINPYTHON: "Python37"
-    - image: Visual Studio 2017
-      WINPYTHON: "Python38"
-
-    # test python 3.7 on Visual Studio 2019 image
-    - image: Visual Studio 2019
-      WINPYTHON: "Python35"
-    - image: Visual Studio 2019
-      WINPYTHON: "Python36"
 
 # remove some binaries we don't want to be found
 before_build:
