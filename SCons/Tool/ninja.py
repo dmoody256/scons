@@ -736,7 +736,7 @@ class NinjaState:
         ninja.build(
             self.ninja_file.path,
             rule="REGENERATE",
-            implicit=[__file__] + list(SConscriptNodes),
+            implicit=[__file__] + [str(node) for node in SConscriptNodes],
         )
 
         # If we ever change the name/s of the rules that include
