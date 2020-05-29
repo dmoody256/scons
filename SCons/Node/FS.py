@@ -1183,6 +1183,7 @@ class FS(LocalFS):
 
         self.Root = {}
         self.SConstruct_dir = None
+        self.SConstructs = []
         self.max_drift = default_max_drift
 
         self.Top = None
@@ -1202,14 +1203,28 @@ class FS(LocalFS):
 
     def set_SConstructs(self, dir, scripts=None):
 
-        if scripts:
-            if not SCons.Util.is_List(scripts):
-                SConscriptNodes.add(scripts)
-            else:
-                for script in scripts:
-                    SConscriptNodes.add(script)
+        if not SCons.Util.is_List(scripts):
+            self.SConstructs = [str(scripts)]
+        else:
+
+            self.SConstructs = [str(script) for script in scripts]
 
         self.SConstruct_dir = dir
+
+    def get_SConstructs(self):
+        """ gets a list of nodes of the original SConstructs invoked """
+        # return the nodes from strings stored in self.SConstructs
+        sconstructs = []
+        for sconstruct in self.SConstructs:
+            for sconstruct_node in SConscriptNodes:
+                if str(sconstruct_node) == sconstruct:
+                    sconstructs.append(sconstruct_node)
+
+        return sconstructs
+
+    def get_SConscripts(self):
+        """ gets a set of nodes of the SConscripts invoked by the SConstructs """
+        return SConscriptNodes.difference(set(self.get_SConstructs()))
 
     def get_max_drift(self):
         return self.max_drift

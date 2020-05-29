@@ -3606,8 +3606,29 @@ class SConstruct_dirTestCase(unittest.TestCase):
         """Test setting the SConstruct directory"""
 
         fs = SCons.Node.FS.FS()
-        fs.set_SConstructs(fs.Dir('xxx'))
+        sconstruct_dir = fs.Dir('xxx')
+        sconstructs = []
+        fs.set_SConstructs(sconstruct_dir)
         assert fs.SConstruct_dir.get_internal_path() == 'xxx'
+        assert fs.get_SConstructs() == sconstructs
+
+        sconstruct_file = fs.File('test_SConstruct')
+        sconstructs.append(sconstruct_file)
+        fs.set_SConstructs(sconstruct_dir, sconstruct_file)
+        SCons.Node.SConscriptNodes.add(sconstruct_file)
+        assert fs.SConstruct_dir.get_internal_path() == 'xxx'
+        assert sconstruct_file.is_sconscript()
+        assert fs.get_SConstructs() == sconstructs
+
+        sconstruct_file2 = fs.File('test_SConstruct2')
+        sconstructs.append(sconstruct_file2)
+        fs.set_SConstructs(sconstruct_dir, sconstructs)
+        SCons.Node.SConscriptNodes.add(sconstruct_file2)
+        assert fs.SConstruct_dir.get_internal_path() == 'xxx'
+        assert sconstruct_file.is_sconscript()
+        assert sconstruct_file2.is_sconscript()
+        assert fs.get_SConstructs() == sconstructs
+        assert fs.get_SConscripts() == set()
 
 
 class CacheDirTestCase(unittest.TestCase):
