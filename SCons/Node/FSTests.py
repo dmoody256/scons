@@ -3606,7 +3606,7 @@ class SConstruct_dirTestCase(unittest.TestCase):
         """Test setting the SConstruct directory"""
 
         fs = SCons.Node.FS.FS()
-        fs.set_SConstruct_dir(fs.Dir('xxx'))
+        fs.set_SConstructs(fs.Dir('xxx'))
         assert fs.SConstruct_dir.get_internal_path() == 'xxx'
 
 

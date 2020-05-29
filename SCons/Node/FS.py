@@ -62,6 +62,7 @@ print_duplicate = 0
 
 MD5_TIMESTAMP_DEBUG = False
 
+from SCons.Node import SConscriptNodes
 
 def sconsign_none(node):
     raise NotImplementedError
@@ -1199,7 +1200,15 @@ class FS(LocalFS):
         DirNodeInfo.fs = self
         FileNodeInfo.fs = self
 
-    def set_SConstruct_dir(self, dir):
+    def set_SConstructs(self, dir, scripts=None):
+
+        if scripts:
+            if not SCons.Util.is_List(scripts):
+                SConscriptNodes.add(scripts)
+            else:
+                for script in scripts:
+                    SConscriptNodes.add(script)
+
         self.SConstruct_dir = dir
 
     def get_max_drift(self):

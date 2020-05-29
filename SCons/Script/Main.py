@@ -949,7 +949,7 @@ def _main(parser):
         d = fs.getcwd()
     else:
         d = fs.File(scripts[0]).dir
-    fs.set_SConstruct_dir(d)
+    fs.set_SConstructs(d, scripts)
 
     _set_debug_values(options)
     SCons.Node.implicit_cache = options.implicit_cache
