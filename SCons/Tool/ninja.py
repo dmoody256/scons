@@ -38,6 +38,7 @@ import SCons
 from SCons.Action import _string_from_cmd_list, get_default_ENV
 from SCons.Util import is_List, flatten_sequence
 from SCons.Script import COMMAND_LINE_TARGETS
+from SCons.Node import SConscriptNodes
 
 NINJA_STATE = None
 NINJA_RULES = "__NINJA_CUSTOM_RULES"
@@ -202,6 +203,7 @@ class SConsToNinjaTranslator:
             # this check for us.
             "SharedFlagChecker": ninja_noop,
             # The install builder is implemented as a function action.
+            # TODO: use command action #3573
             "installFunc": _install_action_function,
             "MkdirFunc": _mkdir_action_function,
             "LibSymlinksActionFunction": _lib_symlink_action_function,
@@ -309,7 +311,7 @@ class SConsToNinjaTranslator:
         all_outputs = list({output for build in results for output in build["outputs"]})
         dependencies = list({dep for build in results for dep in build["implicit"]})
 
-        if results[0]["rule"] == "CMD":
+        if results[0]["rule"] == "CMD" or results[0]["rule"] == "GENERATED_CMD":
             cmdline = ""
             for cmd in results:
 
@@ -339,7 +341,7 @@ class SConsToNinjaTranslator:
             if cmdline:
                 ninja_build = {
                     "outputs": all_outputs,
-                    "rule": "CMD",
+                    "rule": "GENERATED_CMD",
                     "variables": {
                         "cmd": cmdline,
                         "env": get_command_env(node.env if node.env else self.env),
@@ -409,10 +411,11 @@ class NinjaState:
                 sys.executable, " ".join([escape(arg) for arg in sys.argv])
             ),
             # This must be set to a global default per:
-            # https://ninja-build.org/manual.html
-            #
-            # (The deps section)
-            "msvc_deps_prefix": "Note: including file:",
+            # https://ninja-build.org/manual.html#_deps
+            # English Visual Studio will have the default below,
+            # otherwise the user can define the variable in the first environment
+            # that initialized ninja tool
+            "msvc_deps_prefix": env.get("NINJA_MSVC_DEPS_PREFIX", "Note: including file:")
         }
 
         self.rules = {
@@ -557,6 +560,8 @@ class NinjaState:
         self.built.update(build["outputs"])
         return True
 
+    # TODO: rely on SCons to tell us what is generated source
+    # or some form of user scanner maybe (Github Issue #3624)
     def is_generated_source(self, output):
         """Check if output ends with a known generated suffix."""
         _, suffix = splitext(output)
@@ -731,11 +736,7 @@ class NinjaState:
         ninja.build(
             self.ninja_file.path,
             rule="REGENERATE",
-            implicit=[
-                self.env.File("#SConstruct").path,
-                __file__,
-            ]
-            + sorted(glob("src/**/SConscript", recursive=True)),
+            implicit=[__file__] + list(SConscriptNodes),
         )
 
         # If we ever change the name/s of the rules that include
@@ -1134,7 +1135,7 @@ def ninja_csig(original):
 
     def wrapper(self):
         name = str(self)
-        if "SConscript" in name or "SConstruct" in name:
+        if isinstance(self, SCons.Node.Node) and self.is_sconscript():
             return original(self)
         return "dummy_ninja_csig"
 
@@ -1146,7 +1147,7 @@ def ninja_contents(original):
 
     def wrapper(self):
         name = str(self)
-        if "SConscript" in name or "SConstruct" in name:
+        if isinstance(self, SCons.Node.Node) and self.is_sconscript():
             return original(self)
         return bytes("dummy_ninja_contents", encoding="utf-8")
 
@@ -1387,6 +1388,7 @@ def generate(env):
     # Used to determine if a build generates a source file. Ninja
     # requires that all generated sources are added as order_only
     # dependencies to any builds that *might* use them.
+    # TODO: switch to using SCons to help determine this (Github Issue #3624)
     env["NINJA_GENERATED_SOURCE_SUFFIXES"] = [".h", ".hpp"]
 
     if env["PLATFORM"] != "win32" and env.get("RANLIBCOM"):
