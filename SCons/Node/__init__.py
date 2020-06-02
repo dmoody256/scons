@@ -111,6 +111,9 @@ def do_nothing_node(node): pass
 
 Annotate = do_nothing_node
 
+# global set for recording all process SContruct/SConscript nodes
+SConscriptNodes = set()
+
 # Gets set to 'True' if we're running in interactive mode. Is
 # currently used to release parts of a target's info during
 # clean builds and update runs (see release_target_info).
@@ -353,7 +356,7 @@ store_info_map = {0 : store_info_pass,
 
 # Classes for signature info for Nodes.
 
-class NodeInfoBase(object):
+class NodeInfoBase:
     """
     The generic base class for signature information for a Node.
 
@@ -448,7 +451,7 @@ class NodeInfoBase(object):
                 setattr(self, key, value)
 
 
-class BuildInfoBase(object):
+class BuildInfoBase:
     """
     The generic base class for build information for a Node.
 
@@ -559,7 +562,7 @@ class Node(object, metaclass=NoSlotsPyPy):
                  '_func_get_contents',
                  '_func_target_from_source']
 
-    class Attrs(object):
+    class Attrs:
         __slots__ = ('shared', '__dict__')
 
 
@@ -945,6 +948,10 @@ class Node(object, metaclass=NoSlotsPyPy):
         and hence should not return true.
         """
         return _is_derived_map[self._func_is_derived](self)
+
+    def is_sconscript(self):
+        """ Returns true if this node is an sconscript """
+        return self in SConscriptNodes
 
     def alter_targets(self):
         """Return a list of alternate targets for this Node.
@@ -1712,7 +1719,7 @@ def get_children(node, parent): return node.children()
 def ignore_cycle(node, stack): pass
 def do_nothing(node, parent): pass
 
-class Walker(object):
+class Walker:
     """An iterator for walking a Node tree.
 
     This is depth-first, children are visited before the parent.

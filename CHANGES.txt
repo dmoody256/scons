@@ -15,6 +15,9 @@ RELEASE  VERSION/DATE TO BE FILLED IN LATER
       SConstruct/SConscript will still cause "scons: Reading SConscript files ..." to be
       printed, since the option is not set when the build scripts first get read.
     - Added check for SONAME in environment to setup symlinks correctly (Github Issue #3246)
+    - Added storage of SConstructs and SConscripts nodes into global for checking
+      if a given node is a SConstruct/SConscript. Added SCons.FS.get_SConstructs(),
+      SCons.FS.get_SConscripts(), and SCons.Node.is_sconscript() (Github Issue #3625)
 
   From James Benton:
     - Improve Visual Studio solution/project generation code to add support
@@ -147,6 +150,9 @@ RELEASE  VERSION/DATE TO BE FILLED IN LATER
       definitions using a metaclass be written the same for Py2/Py3.
     - Bump python_version_unsupported (and deprecated) to indicate 3.5
       is lowest supported Python.
+    - ParseFlags should not modify the user's passed in dict in case it's
+      a compound data structure (e.g. values are lists) (issue #3665)
+    - In Py3 classes no longer need to be listed as deriving from object.
 
 
 

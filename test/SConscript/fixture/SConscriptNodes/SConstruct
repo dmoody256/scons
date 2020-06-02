@@ -1,0 +1,27 @@
+import SCons.Node
+
+env = Environment()
+SConscript('dir1/SConscript1')
+SConscript('dir2/SConscript2')
+File('file.txt')
+nw = SCons.Node.Walker(env.Dir("."))
+node = nw.get_next()
+while node is not None:
+    print(str(node))
+    if str(node) == 'dir1/SConscript1' and not node.is_sconscript():
+        raise Exception('dir1/SConscript1 is not SConscript!')
+    elif str(node) == 'dir2/SConscript2' and not node.is_sconscript():
+        raise Exception('dir2/SConscript2 is not SConscript!')
+    elif str(node) == 'SConstruct' and not node.is_sconscript():
+        raise Exception('SConstruct is not SConscript!')
+    elif 'file.txt' in str(node) and node.is_sconscript():
+        raise Exception(str(node) + ' is SConscript!')
+    node = nw.get_next()
+
+if (not str(env.fs.get_SConstructs()[0]) == 'SConstruct' 
+    or not env.fs.get_SConstructs()[0].is_sconscript()):
+    raise Exception('get_SConstructs is not SConstruct!')
+for sconscript in env.fs.get_SConscripts():
+    if ('SConscript' not in str(sconscript) 
+        or not sconscript.is_sconscript()):
+        raise Exception(str(sconscript) + ' is not SConscript!')

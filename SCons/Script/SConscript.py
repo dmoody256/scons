@@ -43,7 +43,7 @@ import SCons.SConf
 import SCons.Script.Main
 import SCons.Tool
 from SCons.Util import is_List, is_String, is_Dict, flatten
-
+from SCons.Node import SConscriptNodes
 from . import Main
 
 import collections
@@ -110,7 +110,7 @@ def compute_exports(exports):
 
     return retval
 
-class Frame(object):
+class Frame:
     """A frame on the SConstruct/SConscript call stack"""
     def __init__(self, fs, exports, sconscript):
         self.globals = BuildDefaultGlobals()
@@ -202,6 +202,7 @@ def _SConscript(fs, *files, **kw):
                 else:
                     f = fs.File(str(fn))
                 _file_ = None
+                SConscriptNodes.add(f)
 
                 # Change directory to the top of the source
                 # tree to make sure the os's cwd and the cwd of
@@ -640,7 +641,7 @@ def get_DefaultEnvironmentProxy():
         _DefaultEnvironmentProxy = SCons.Environment.NoSubstitutionProxy(default_env)
     return _DefaultEnvironmentProxy
 
-class DefaultEnvironmentCall(object):
+class DefaultEnvironmentCall:
     """A class that implements "global function" calls of
     Environment methods by fetching the specified method from the
     DefaultEnvironment's class.  Note that this uses an intermediate
