@@ -62,7 +62,7 @@ def _install_action_function(_env, node):
     return {
         "outputs": get_outputs(node),
         "rule": "INSTALL",
-        "inputs": [get_path(src_file(s)) for s in node.sources],
+        "inputs": [get_path(src_file(s)) for s in node.sources if not isinstance(s, SCons.Node.Python.Value)],
         "implicit": get_dependencies(node),
     }
 
@@ -86,7 +86,7 @@ def _mkdir_action_function(env, node):
 def _copy_action_function(env, node):
     return {
         "outputs": get_outputs(node),
-        "inputs": [get_path(src_file(s)) for s in node.sources],
+        "inputs": [get_path(src_file(s)) for s in node.sources if not isinstance(s, SCons.Node.Python.Value)],
         "rule": "CMD",
         "variables": {
             "cmd": "$COPY $in $out",
@@ -139,7 +139,7 @@ def alias_to_ninja_build(node):
         "outputs": get_outputs(node),
         "rule": "phony",
         "implicit": [
-            get_path(src_file(n)) for n in node.children() if is_valid_dependent_node(n)
+            get_path(src_file(n)) for n in node.children() if is_valid_dependent_node(n) and not isinstance(n, SCons.Node.Python.Value)
         ],
     }
 
@@ -148,7 +148,7 @@ def get_order_only(node):
     """Return a list of order only dependencies for node."""
     if node.prerequisites is None:
         return []
-    return [get_path(src_file(prereq)) for prereq in node.prerequisites]
+    return [get_path(src_file(prereq)) for prereq in node.prerequisites if not isinstance(prereq, SCons.Node.Python.Value)]
 
 
 def get_dependencies(node, skip_sources=False):
@@ -157,9 +157,9 @@ def get_dependencies(node, skip_sources=False):
         return [
             get_path(src_file(child))
             for child in node.children()
-            if child not in node.sources
+            if child not in node.sources and not isinstance(child, SCons.Node.Python.Value)
         ]
-    return [get_path(src_file(child)) for child in node.children()]
+    return [get_path(src_file(child)) for child in node.children() if not isinstance(child, SCons.Node.Python.Value)]
 
 
 def get_inputs(node):
@@ -170,7 +170,7 @@ def get_inputs(node):
     else:
         inputs = node.sources
 
-    inputs = [get_path(src_file(o)) for o in inputs]
+    inputs = [get_path(src_file(o)) for o in inputs if not isinstance(o, SCons.Node.Python.Value)]
     return inputs
 
 
@@ -252,7 +252,6 @@ class SConsToNinjaTranslator:
 
         if build is not None:
             build["order_only"] = get_order_only(node)
-
         return build
 
     def handle_func_action(self, node, action):
@@ -264,12 +263,6 @@ class SConsToNinjaTranslator:
         # the bottom of ninja's DAG anyway and Textfile builders can have text
         # content as their source which doesn't work as an implicit dep in
         # ninja.
-        if name == "_action":
-            return {
-                "rule": "TEMPLATE",
-                "outputs": get_outputs(node),
-                "implicit": get_dependencies(node, skip_sources=True),
-            }
         if name == 'ninja_builder':
             return None
 
@@ -281,6 +274,12 @@ class SConsToNinjaTranslator:
             handler = self.func_handlers.get(action_to_call, None)
             if handler is not None:
                 return handler(node.env if node.env else self.env, node)
+
+        return {
+                "rule": "TEMPLATE",
+                "outputs": get_outputs(node),
+                "implicit": get_dependencies(node, skip_sources=True),
+            }
 
         raise Exception(
             "Found unhandled function action {}, "
@@ -365,7 +364,7 @@ class SConsToNinjaTranslator:
             return {
                 "outputs": all_outputs,
                 "rule": "INSTALL",
-                "inputs": [get_path(src_file(s)) for s in node.sources],
+                "inputs": [get_path(src_file(s)) for s in node.sources if not isinstance(s, SCons.Node.Python.Value)],
                 "implicit": dependencies,
             }
 
@@ -401,13 +400,13 @@ class NinjaState:
 
         self.variables = {
             "COPY": "cmd.exe /c 1>NUL copy" if sys.platform == "win32" else "cp",
-            "SCONS_INVOCATION": "{} {} __NINJA_NO=1 $out".format(
+            "SCONS_INVOCATION": "{} {} --disable-ninja __NINJA_NO=1 $out".format(
                 sys.executable,
                 " ".join(
                     [escape(arg) for arg in sys.argv if arg not in COMMAND_LINE_TARGETS]
                 ),
             ),
-            "SCONS_INVOCATION_W_TARGETS": "{} {}".format(
+            "SCONS_INVOCATION_W_TARGETS": "{} {} --disable-ninja".format(
                 sys.executable, " ".join([escape(arg) for arg in sys.argv])
             ),
             # This must be set to a global default per:
@@ -484,13 +483,13 @@ class NinjaState:
             },
             "TEMPLATE": {
                 "command": "$SCONS_INVOCATION $out",
-                "description": "Rendering $out",
+                "description": "Rendering $SCONS_INVOCATION $out",
                 "pool": "scons_pool",
                 "restat": 1,
             },
             "SCONS": {
                 "command": "$SCONS_INVOCATION $out",
-                "description": "SCons $out",
+                "description": "$SCONS_INVOCATION $out",
                 "pool": "scons_pool",
                 # restat
                 #    if present, causes Ninja to re-stat the command's outputs
@@ -680,7 +679,6 @@ class NinjaState:
             # use for the "real" builder and multiple phony targets that
             # match the file names of the remaining outputs. This way any
             # build can depend on any output from any build.
-            build["outputs"].sort()
             if rule is not None and (rule.get("deps") or rule.get("rspfile")):
                 first_output, remaining_outputs = (
                     build["outputs"][0],
@@ -689,7 +687,7 @@ class NinjaState:
 
                 if remaining_outputs:
                     ninja.build(
-                        outputs=remaining_outputs, rule="phony", implicit=first_output,
+                        outputs=sorted(remaining_outputs), rule="phony", implicit=first_output,
                     )
 
                 build["outputs"] = first_output
@@ -1434,6 +1432,16 @@ def generate(env):
     SCons.Taskmaster.Task.prepare = ninja_noop
     SCons.Node.FS.File.built = ninja_noop
     SCons.Node.Node.visited = ninja_noop
+
+     # Ignore CHANGED_SOURCES and CHANGED_TARGETS. We don't want those
+    # to have effect in a generation pass because the generator
+    # shouldn't generate differently depending on the current local
+    # state. Without this, when generating on Windows, if you already
+    # had a foo.obj, you would omit foo.cpp from the response file. Do the same for UNCHANGED.
+    SCons.Executor.Executor._get_changed_sources = SCons.Executor.Executor._get_sources
+    SCons.Executor.Executor._get_changed_targets = SCons.Executor.Executor._get_targets
+    SCons.Executor.Executor._get_unchanged_sources = SCons.Executor.Executor._get_sources
+    SCons.Executor.Executor._get_unchanged_targets = SCons.Executor.Executor._get_targets
 
     # We make lstat a no-op because it is only used for SONAME
     # symlinks which we're not producing.
