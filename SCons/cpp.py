@@ -184,7 +184,7 @@ del override
 
 
 
-class FunctionEvaluator(object):
+class FunctionEvaluator:
     """
     Handles delayed evaluation of a #define function call.
     """
@@ -241,7 +241,7 @@ function_arg_separator = re.compile(r',\s*')
 
 
 
-class PreProcessor(object):
+class PreProcessor:
 
     """
     The main workhorse class for handling C pre-processing.
@@ -603,8 +603,7 @@ class PreProcessor(object):
 
         This handles recursive expansion of values without "" or <>
         surrounding the name until an initial " or < is found, to handle
-                #include FILE
-        where FILE is a #define somewhere else.
+        #include FILE where FILE is a #define somewhere else.
         """
         s = t[1].strip()
         while not s[0] in '<"':

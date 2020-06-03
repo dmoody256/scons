@@ -301,22 +301,25 @@ def build_specfile_filesection(spec, files):
 
     return str
 
-class SimpleTagCompiler(object):
-    """ This class is a simple string substition utility:
-    the replacement specfication is stored in the tagset dictionary, something
-    like:
-     { "abc"  : "cdef %s ",
-       "abc_" : "cdef %s %s" }
+class SimpleTagCompiler:
+    """ Compile RPM tags by doing simple string substitution.
 
-    the compile function gets a value dictionary, which may look like:
-    { "abc"    : "ghij",
-      "abc_gh" : "ij" }
+    The replacement specfication is stored in the *tagset* dictionary,
+    something like::
 
-    The resulting string will be:
-     "cdef ghij cdef gh ij"
+      {"abc" : "cdef %s ", "abc_": "cdef %s %s"}
+
+    The :func:`compile` function gets a value dictionary, which may look like::
+
+      {"abc": "ghij", "abc_gh": "ij"}
+
+    The resulting string will be::
+
+      "cdef ghij cdef gh ij"
+
     """
     def __init__(self, tagset, mandatory=1):
-        self.tagset    = tagset
+        self.tagset = tagset
         self.mandatory = mandatory
 
     def compile(self, values):

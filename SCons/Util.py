@@ -187,7 +187,7 @@ def get_environment_var(varstr):
         return None
 
 
-class DisplayEngine(object):
+class DisplayEngine:
     print_it = True
 
     def __call__(self, text, append_newline=1):
@@ -571,7 +571,7 @@ def semi_deepcopy(x):
         return x
 
 
-class Proxy(object):
+class Proxy:
     """A simple generic Proxy class, forwarding all calls to
     subject.  So, for the benefit of the python newbie, what does
     this really mean?  Well, it means that you can take an object, let's
@@ -621,7 +621,7 @@ class Proxy(object):
         return self.__dict__ == other.__dict__
 
 
-class Delegate(object):
+class Delegate:
     """A Python Descriptor class that delegates attribute fetches
     to an underlying wrapped subject of a Proxy.  Typical use:
 
@@ -1246,7 +1246,7 @@ def logical_lines(physical_lines, joiner=''.join):
         yield joiner(logical_line)
 
 
-class LogicalLines(object):
+class LogicalLines:
     """ Wrapper class for the logical_lines method.
 
         Allows us to read all "logical" lines at once from a
@@ -1352,7 +1352,7 @@ class UniqueList(UserList):
         self.unique = False
 
 
-class Unbuffered(object):
+class Unbuffered:
     """
     A proxy class that wraps a file object, flushing after every write,
     and delegating everything else to the wrapped object.
@@ -1544,8 +1544,7 @@ def silent_intern(x):
 # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/68205
 # ASPN: Python Cookbook: Null Object Design Pattern
 
-#TODO??? class Null(object):
-class Null(object):
+class Null:
     """ Null objects always and reliably "do nothing." """
     def __new__(cls, *args, **kwargs):
         if '_instance' not in vars(cls):
@@ -1570,6 +1569,7 @@ class Null(object):
 
 
 class NullSeq(Null):
+    """ A Null object that can also be iterated over. """
     def __len__(self):
         return 0
     def __iter__(self):
@@ -1611,16 +1611,21 @@ def cmp(a, b):
 
 
 def get_env_bool(env, name, default=False):
-    """Get a value of env[name] converted to boolean. The value of env[name] is
-    interpreted as follows: 'true', 'yes', 'y', 'on' (case insensitive) and
-    anything convertible to int that yields non-zero integer are True values;
-    '0', 'false', 'no', 'n' and 'off' (case insensitive) are False values. For
-    all other cases, default value is returned.
+    """Convert a construction variable to bool.
 
-    :Parameters:
-        - `env`     - dict or dict-like object, a convainer with variables
-        - `name`    - name of the variable in env to be returned
-        - `default` - returned when env[name] does not exist or can't be converted to bool
+    If the value of *name* in *env* is 'true', 'yes', 'y', 'on' (case
+    insensitive) or anything convertible to int that yields non-zero then
+    return True; if 'false', 'no', 'n', 'off' (case insensitive)
+    or a number that converts to integer zero return False.
+    Otherwise, return *default*.
+
+    Args:
+        env: construction environment, or any dict-like object
+        name: name of the variable
+        default: value to return if *name* not in *env* or cannot
+          be converted (default: False)
+    Returns:
+        bool: the "truthiness" of *name*
     """
     try:
         var = env[name]
@@ -1638,7 +1643,10 @@ def get_env_bool(env, name, default=False):
 
 
 def get_os_env_bool(name, default=False):
-    """Same as get_env_bool(os.environ, name, default)."""
+    """Convert an environment variable to bool.
+
+    Conversion is the same as for :func:`get_env_bool`.
+    """
     return get_env_bool(os.environ, name, default)
 
 # Local Variables:

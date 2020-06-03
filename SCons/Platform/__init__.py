@@ -56,10 +56,10 @@ import SCons.Tool
 
 
 def platform_default():
-    """Return the platform string for our execution environment.
+    r"""Return the platform string for our execution environment.
 
     The returned value should map to one of the SCons/Platform/*.py
-    files.  Since we're architecture independent, though, we don't
+    files.  Since scons is architecture independent, though, we don't
     care about the machine architecture.
     """
     osname = os.name
@@ -118,7 +118,7 @@ def DefaultToolList(platform, env):
     return SCons.Tool.tool_list(platform, env)
 
 
-class PlatformSpec(object):
+class PlatformSpec:
     def __init__(self, name, generate):
         self.name = name
         self.generate = generate
@@ -130,27 +130,34 @@ class PlatformSpec(object):
         return self.name
 
 
-class TempFileMunge(object):
-    """A callable class.  You can set an Environment variable to this,
-    then call it with a string argument, then it will perform temporary
-    file substitution on it.  This is used to circumvent the long command
-    line limitation.
+class TempFileMunge:
+    """Convert long command lines to use a temporary file.
 
-    Example usage:
+    You can set an Environment variable (usually `TEMPFILE`) to this,
+    then call it with a string argument, and it will perform temporary
+    file substitution on it.  This is used to circumvent limitations on
+    the length of command lines. Example::
+
         env["TEMPFILE"] = TempFileMunge
         env["LINKCOM"] = "${TEMPFILE('$LINK $TARGET $SOURCES','$LINKCOMSTR')}"
 
     By default, the name of the temporary file used begins with a
     prefix of '@'.  This may be configured for other tool chains by
-    setting '$TEMPFILEPREFIX':
+    setting the TEMPFILEPREFIX variable. Example::
+
         env["TEMPFILEPREFIX"] = '-@'        # diab compiler
         env["TEMPFILEPREFIX"] = '-via'      # arm tool chain
         env["TEMPFILEPREFIX"] = ''          # (the empty string) PC Lint
 
     You can configure the extension of the temporary file through the
     TEMPFILESUFFIX variable, which defaults to '.lnk' (see comments
-    in the code below):
+    in the code below). Example::
+
         env["TEMPFILESUFFIX"] = '.lnt'   # PC Lint
+
+    Entries in the temporary file are separated by the value of the
+    TEMPFILEARGJOIN variable, which defaults to an OS-appropriate value.
+
     """
     def __init__(self, cmd, cmdstr = None):
         self.cmd = cmd
