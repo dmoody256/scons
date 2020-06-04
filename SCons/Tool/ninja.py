@@ -398,16 +398,21 @@ class NinjaState:
         # like CCFLAGS
         escape = env.get("ESCAPE", lambda x: x)
 
+        # if SCons was invoked from python, we expect the first arg to be the scons.py
+        # script, otherwise scons was invoked from the scons script
+        python_bin = ''
+        if os.path.basename(sys.argv[0]) == 'scons.py':
+            python_bin = escape(sys.executable)
         self.variables = {
             "COPY": "cmd.exe /c 1>NUL copy" if sys.platform == "win32" else "cp",
             "SCONS_INVOCATION": '{} {} --disable-ninja __NINJA_NO=1 $out'.format(
-                escape(sys.executable),
+                python_bin,
                 " ".join(
                     [escape(arg) for arg in sys.argv if arg not in COMMAND_LINE_TARGETS]
                 ),
             ),
             "SCONS_INVOCATION_W_TARGETS": "{} {} --disable-ninja".format(
-                escape(sys.executable), " ".join([escape(arg) for arg in sys.argv])
+                python_bin, " ".join([escape(arg) for arg in sys.argv])
             ),
             # This must be set to a global default per:
             # https://ninja-build.org/manual.html#_deps
