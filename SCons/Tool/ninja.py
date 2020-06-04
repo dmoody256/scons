@@ -400,14 +400,14 @@ class NinjaState:
 
         self.variables = {
             "COPY": "cmd.exe /c 1>NUL copy" if sys.platform == "win32" else "cp",
-            "SCONS_INVOCATION": "{} {} --disable-ninja __NINJA_NO=1 $out".format(
-                sys.executable,
+            "SCONS_INVOCATION": '{} {} --disable-ninja __NINJA_NO=1 $out'.format(
+                escape(sys.executable),
                 " ".join(
                     [escape(arg) for arg in sys.argv if arg not in COMMAND_LINE_TARGETS]
                 ),
             ),
             "SCONS_INVOCATION_W_TARGETS": "{} {} --disable-ninja".format(
-                sys.executable, " ".join([escape(arg) for arg in sys.argv])
+                escape(sys.executable), " ".join([escape(arg) for arg in sys.argv])
             ),
             # This must be set to a global default per:
             # https://ninja-build.org/manual.html#_deps
@@ -911,6 +911,7 @@ def gen_get_response_file_command(env, rule, tool, tool_is_dynamic=False):
             )
 
         cmd, rsp_content = cmd_list[:tool_idx], cmd_list[tool_idx:]
+        rsp_content = [env.get('ESCAPE')(rsp_content_item) for rsp_content_item in rsp_content]
         rsp_content = " ".join(rsp_content)
 
         variables = {"rspc": rsp_content}
@@ -1050,20 +1051,23 @@ def ninja_builder(env, target, source):
             for key in env['ENV']:
                 f.write('set {}={}\n'.format(key, env['ENV'][key]))
             f.write('{} -f {} %*\n'.format(NINJA_STATE.ninja_bin_path, generated_build_ninja))  
-                
-    if not env.get("DISABLE_AUTO_NINJA"):
+        cmd = ['run_ninja_env.bat'] 
+
+    else:
         cmd = [NINJA_STATE.ninja_bin_path, '-f', generated_build_ninja]
+            
+    if not env.get("DISABLE_AUTO_NINJA"):
         print("Executing:", str(' '.join(cmd)))
 
         # execute the ninja build at the end of SCons, trying to
         # reproduce the output like a ninja build would
         def execute_ninja():
-
+            
             proc = subprocess.Popen(cmd,
                 stderr=sys.stderr,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
-                env=env['ENV'] # ninja build items won't consider node env on win32
+                env=os.environ if env["PLATFORM"] == "win32" else env['ENV']
             )
             for stdout_line in iter(proc.stdout.readline, ""):
                 yield stdout_line
