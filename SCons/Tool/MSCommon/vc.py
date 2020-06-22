@@ -190,9 +190,8 @@ def get_msvc_version_numeric(msvc_version):
     return ''.join([x for  x in msvc_version if x in string_digits + '.'])
 
 def get_host_target(env):
-    debug('called')
-
     host_platform = env.get('HOST_ARCH')
+    debug("HOST_ARCH:" + str(host_platform))
     if not host_platform:
         host_platform = platform.machine()
 
@@ -205,8 +204,7 @@ def get_host_target(env):
 
     # Retain user requested TARGET_ARCH
     req_target_platform = env.get('TARGET_ARCH')
-    debug('req_target_platform:%s' % req_target_platform)
-
+    debug("HOST_ARCH:" + str(req_target_platform))
     if req_target_platform:
         # If user requested a specific platform then only try that one.
         target_platform = req_target_platform
@@ -231,10 +229,19 @@ def get_host_target(env):
 # MSVC_VERSION documentation in Tool/msvc.xml.
 _VCVER = ["14.2", "14.1", "14.1Exp", "14.0", "14.0Exp", "12.0", "12.0Exp", "11.0", "11.0Exp", "10.0", "10.0Exp", "9.0", "9.0Exp","8.0", "8.0Exp","7.1", "7.0", "6.0"]
 
-# if using vswhere, a further mapping is needed
+# if using vswhere, configure command line arguments to probe for installed VC editions
 _VCVER_TO_VSWHERE_VER = {
-    '14.2': '[16.0, 17.0)',
-    '14.1': '[15.0, 16.0)',
+    '14.2': [
+        ["-version", "[16.0, 17.0)", ], # default: Enterprise, Professional, Community  (order unpredictable?)
+        ["-version", "[16.0, 17.0)", "-products", "Microsoft.VisualStudio.Product.BuildTools"], # BuildTools
+        ],
+    '14.1':    [
+        ["-version", "[15.0, 16.0)", ], # default: Enterprise, Professional, Community (order unpredictable?)
+        ["-version", "[15.0, 16.0)", "-products", "Microsoft.VisualStudio.Product.BuildTools"], # BuildTools
+        ],
+    '14.1Exp': [
+        ["-version", "[15.0, 16.0)", "-products", "Microsoft.VisualStudio.Product.WDExpress"], # Express
+        ],
 }
 
 _VCVER_TO_PRODUCT_DIR = {
@@ -308,12 +315,17 @@ def msvc_version_to_maj_min(msvc_version):
 def is_host_target_supported(host_target, msvc_version):
     """Check if (host, target) pair is supported for a VC version.
 
-    :note: only checks whether a given version *may* support the given (host,
-        target), not that the toolchain is actually present on the machine.
-    :param tuple host_target: canonalized host-targets pair, e.g.
-        ("x86", "amd64") for cross compilation from 32 bit Windows to 64 bits.
-    :param str msvc_version: Visual C++ version (major.minor), e.g. "10.0"
-    :returns: True or False
+    Only checks whether a given version *may* support the given
+    (host, target) pair, not that the toolchain is actually on the machine.
+
+    Args:
+        host_target: canonalized host-target pair, e.g.
+          ("x86", "amd64") for cross compilation from 32- to 64-bit Windows.
+        msvc_version: Visual C++ version (major.minor), e.g. "10.0"
+
+    Returns:
+        True or False
+
     """
     # We assume that any Visual Studio version supports x86 as a target
     if host_target[1] != "x86":
@@ -330,9 +342,7 @@ VSWHERE_PATHS = [os.path.join(p,'vswhere.exe') for p in  [
 ]]
 
 def msvc_find_vswhere():
-    """
-    Find the location of vswhere
-    """
+    """ Find the location of vswhere """
     # For bug 3333: support default location of vswhere for both
     # 64 and 32 bit windows installs.
     # For bug 3542: also accommodate not being on C: drive.
@@ -347,14 +357,19 @@ def msvc_find_vswhere():
     return vswhere_path
 
 def find_vc_pdir_vswhere(msvc_version, env=None):
-    """
-    Find the MSVC product directory using the vswhere program.
+    """ Find the MSVC product directory using the vswhere program.
 
-    :param msvc_version: MSVC version to search for
-    :return: MSVC install dir or None
-    :raises UnsupportedVersion: if the version is not known by this file
-    """
+    Args:
+        msvc_version: MSVC version to search for
+        env: optional to look up VSWHERE variable
 
+    Returns:
+        MSVC install dir or None
+
+    Raises:
+        UnsupportedVersion: if the version is not known by this file
+
+    """
     try:
         vswhere_version = _VCVER_TO_VSWHERE_VER[msvc_version]
     except KeyError:
@@ -369,30 +384,29 @@ def find_vc_pdir_vswhere(msvc_version, env=None):
     if vswhere_path is None:
         return None
 
-    debug('VSWHERE = %s'%vswhere_path)
-    vswhere_cmd = [
-        vswhere_path,
-        "-products", "*",
-        "-version", vswhere_version,
-        "-property", "installationPath",
-    ]
+    debug('VSWHERE: %s' % vswhere_path)
+    for vswhere_version_args in vswhere_version:
 
-    debug("running: %s" % vswhere_cmd)
+        vswhere_cmd = [vswhere_path] + vswhere_version_args + ["-property", "installationPath"]
 
-    #cp = subprocess.run(vswhere_cmd, capture_output=True)  # 3.7+ only
-    cp = subprocess.run(vswhere_cmd, stdout=PIPE, stderr=PIPE)
+        debug("running: %s" % vswhere_cmd)
 
-    if cp.stdout:
-        # vswhere could return multiple lines, e.g. if Build Tools
-        # and {Community,Professional,Enterprise} are both installed.
-        # We could define a way to pick the one we prefer, but since
-        # this data is currently only used to make a check for existence,
-        # returning the first hit should be good enough.
-        lines = cp.stdout.decode("mbcs").splitlines()
-        return os.path.join(lines[0], 'VC')
-    else:
-        # We found vswhere, but no install info available for this version
-        return None
+        #cp = subprocess.run(vswhere_cmd, capture_output=True)  # 3.7+ only
+        cp = subprocess.run(vswhere_cmd, stdout=PIPE, stderr=PIPE)
+
+        if cp.stdout:
+            # vswhere could return multiple lines, e.g. if Build Tools
+            # and {Community,Professional,Enterprise} are both installed.
+            # We could define a way to pick the one we prefer, but since
+            # this data is currently only used to make a check for existence,
+            # returning the first hit should be good enough.
+            lines = cp.stdout.decode("mbcs").splitlines()
+            return os.path.join(lines[0], 'VC')
+        else:
+            # We found vswhere, but no install info available for this version
+            pass
+
+    return None
 
 
 def find_vc_pdir(env, msvc_version):
@@ -414,6 +428,7 @@ def find_vc_pdir(env, msvc_version):
         MissingConfiguration: found version but the directory is missing.
 
         Both exceptions inherit from VisualCException.
+
     """
     root = 'Software\\'
     try:
@@ -467,7 +482,7 @@ def find_batch_file(env,msvc_version,host_arch,target_arch):
     pdir = find_vc_pdir(env, msvc_version)
     if pdir is None:
         raise NoVersionFound("No version of Visual Studio found")
-    debug('find_batch_file() in {}'.format(pdir))
+    debug('looking in {}'.format(pdir))
 
     # filter out e.g. "Exp" from the version name
     msvc_ver_numeric = get_msvc_version_numeric(msvc_version)
@@ -590,8 +605,7 @@ def _check_cl_exists_in_vc_dir(env, vc_dir, msvc_version):
                 return True
 
     elif 14 >= ver_num >= 8:
-
-        # Set default value to be -1 as "" which is the value for x86/x86
+        # Set default value to be -1 as "", which is the value for x86/x86,
         # yields true when tested if not host_trgt_dir
         host_trgt_dir = _HOST_TARGET_TO_CL_DIR.get((host_platform, target_platform), None)
         if host_trgt_dir is None:
@@ -622,11 +636,20 @@ def _check_cl_exists_in_vc_dir(env, vc_dir, msvc_version):
             return True
 
     elif 8 > ver_num >= 6:
-        # not sure about these versions so if a walk the VC dir (could be slow)
-        for root, _, files in os.walk(vc_dir):
-            if _CL_EXE_NAME in files:
-                debug(_CL_EXE_NAME + ' found %s' % os.path.join(root, _CL_EXE_NAME))
+        # quick check for vc_dir/bin and vc_dir/ before walk
+        # need to check root as the walk only considers subdirectories
+        for cl_dir in ('bin', ''):
+            cl_path = os.path.join(vc_dir, cl_dir, _CL_EXE_NAME)
+            if os.path.exists(cl_path):
+                debug(_CL_EXE_NAME + ' found %s' % cl_path)
                 return True
+        # not in bin or root: must be in a subdirectory
+        for cl_root, cl_dirs, _ in os.walk(vc_dir):
+            for cl_dir in cl_dirs:
+                cl_path = os.path.join(cl_root, cl_dir, _CL_EXE_NAME)
+                if os.path.exists(cl_path):
+                    debug(_CL_EXE_NAME + ' found %s' % cl_path)
+                    return True
         return False
     else:
         # version not support return false
@@ -668,6 +691,7 @@ def get_installed_vcs(env=None):
 
 def reset_installed_vcs():
     """Make it try again to find VC.  This is just for the tests."""
+    global __INSTALLED_VCS_RUN
     __INSTALLED_VCS_RUN = None
 
 # Running these batch files isn't cheap: most of the time spent in
@@ -714,12 +738,9 @@ def script_env(script, args=None):
     return cache_data
 
 def get_default_version(env):
-    debug('called')
-
     msvc_version = env.get('MSVC_VERSION')
     msvs_version = env.get('MSVS_VERSION')
-
-    debug('msvc_version:%s msvs_version:%s' % (msvc_version,msvs_version))
+    debug('msvc_version:%s msvs_version:%s' % (msvc_version, msvs_version))
 
     if msvs_version and not msvc_version:
         SCons.Warnings.warn(
@@ -735,6 +756,7 @@ def get_default_version(env):
                     "visual studio version, MSVS_VERSION is deprecated" \
                     % (msvc_version, msvs_version))
         return msvs_version
+
     if not msvc_version:
         installed_vcs = cached_get_installed_vcs(env)
         debug('installed_vcs:%s' % installed_vcs)
@@ -746,6 +768,8 @@ def get_default_version(env):
             return None
         msvc_version = installed_vcs[0]
         debug('using default installed MSVC version %s' % repr(msvc_version))
+    else:
+        debug('using specified MSVC version %s' % repr(msvc_version))
 
     return msvc_version
 
@@ -879,14 +903,12 @@ def msvc_find_valid_batch_script(env, version):
 
 def msvc_setup_env(env):
     debug('called')
-
     version = get_default_version(env)
     if version is None:
         warn_msg = "No version of Visual Studio compiler found - C/C++ " \
                    "compilers most likely not set correctly"
         SCons.Warnings.warn(SCons.Warnings.VisualCMissingWarning, warn_msg)
         return None
-    debug('using specified MSVC version %s' % repr(version))
 
     # XXX: we set-up both MSVS version for backward
     # compatibility with the msvs tool
