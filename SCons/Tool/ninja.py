@@ -92,6 +92,15 @@ def check_invalid_ninja_node(node):
     return not isinstance(node, (SCons.Node.FS.Base, SCons.Node.Alias.Alias))
 
 
+def filter_ninja_nodes(node_list):
+    ninja_nodes = []
+    for node in node_list:
+        if isinstance(node, (SCons.Node.FS.Base, SCons.Node.Alias.Alias)):
+            ninja_nodes.append(node)
+        else:
+            continue
+    return ninja_nodes
+
 def get_input_nodes(node):
     if node.get_executor() is not None:
         inputs = node.get_executor().get_all_sources()
@@ -112,7 +121,7 @@ def get_order_only(node):
     """Return a list of order only dependencies for node."""
     if node.prerequisites is None:
         return []
-    return [get_path(src_file(prereq)) for prereq in node.prerequisites]
+    return [get_path(src_file(prereq)) for prereq in filter_ninja_nodes(node.prerequisites)]
 
 
 def get_dependencies(node, skip_sources=False):
@@ -120,15 +129,15 @@ def get_dependencies(node, skip_sources=False):
     if skip_sources:
         return [
             get_path(src_file(child))
-            for child in node.children()
+            for child in filter_ninja_nodes(node.children())
             if child not in node.sources
         ]
-    return [get_path(src_file(child)) for child in node.children()]
+    return [get_path(src_file(child)) for child in filter_ninja_nodes(node.children())]
 
 
 def get_inputs(node):
     """Collect the Ninja inputs for node."""
-    return [get_path(src_file(o)) for o in get_input_nodes(node)]
+    return [get_path(src_file(o)) for o in filter_ninja_nodes(get_input_nodes(node))]
 
 
 def get_outputs(node):
@@ -142,7 +151,7 @@ def get_outputs(node):
         else:
             outputs = [node]
 
-    outputs = [get_path(o) for o in outputs]
+    outputs = [get_path(o) for o in filter_ninja_nodes(outputs)]
 
     return outputs
 
@@ -325,7 +334,9 @@ class SConsToNinjaTranslator:
 
         return {
                 "rule": "TEMPLATE",
+                "order_only": get_order_only(node),
                 "outputs": get_outputs(node),
+                "inputs": get_inputs(node),
                 "implicit": get_dependencies(node, skip_sources=True),
             }
 
@@ -1336,8 +1347,6 @@ def generate(env):
             default=False,
             help='Disable ninja automatically building after scons')
 
-    if GetOption('disable_ninja'):
-        return env
 
     try:
         import ninja
@@ -1454,6 +1463,9 @@ def generate(env):
 
         # Disable running ranlib, since we added 's' above
         env["RANLIBCOM"] = ""
+
+    if GetOption('disable_ninja'):
+        return env
 
     SCons.Warnings.Warning("Initializing ninja tool... this feature is experimental. SCons internals and all environments will be affected.")
 
