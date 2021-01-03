@@ -132,7 +132,7 @@ def get_dependencies(node, skip_sources=False):
         return [
             get_path(src_file(child))
             for child in filter_ninja_nodes(node.children())
-            if child not in node.sources
+            if child not in node.sources and child not in node.ignore
         ]
     return [get_path(src_file(child)) for child in filter_ninja_nodes(node.children())]
 
@@ -402,7 +402,7 @@ class SConsToNinjaTranslator:
             return results[0]
 
         all_outputs = list({output for build in results for output in build["outputs"]})
-        dependencies = list({dep for build in results for dep in build["implicit"]})
+        dependencies = list({dep for build in results for dep in build.get("implicit", [])})
 
         if results[0]["rule"] == "CMD" or results[0]["rule"] == "GENERATED_CMD":
             cmdline = ""
@@ -462,7 +462,13 @@ class SConsToNinjaTranslator:
                 "implicit": dependencies,
             }
 
-        raise Exception("Unhandled list action with rule: " + results[0]["rule"])
+        return {
+                "rule": "TEMPLATE",
+                "order_only": get_order_only(node),
+                "outputs": get_outputs(node),
+                "inputs": get_inputs(node),
+                "implicit": get_dependencies(node, skip_sources=True),
+            }
 
 
 # pylint: disable=too-many-instance-attributes
@@ -593,6 +599,7 @@ class NinjaState:
                 "description": "Rendering $SCONS_INVOCATION  $out",
                 "pool": "scons_pool",
                 "restat": 1,
+                "generator": 1
             },
             "SCONS": {
                 "command": "$SCONS_INVOCATION $out",
@@ -662,7 +669,7 @@ class NinjaState:
 
         node_string = str(node)
         if node_string in self.builds:
-            raise Exception("Node {} added to ninja build state more than once".format(node_string))
+            raise Exception("Node {} added to ninja build state more than once".format(node.builder.get_name(self.env)))
         self.builds[node_string] = build
         self.built.update(build["outputs"])
         return True
@@ -827,28 +834,8 @@ class NinjaState:
 
             ninja.build(**build)
 
-        template_builds = dict()
         for template_builder in template_builders:
-
-            # Special handling for outputs and implicit since we need to
-            # aggregate not replace for each builder.
-            for agg_key in ["outputs", "implicit", "inputs"]:
-                new_val = template_builds.get(agg_key, [])
-
-                # Use pop so the key is removed and so the update
-                # below will not overwrite our aggregated values.
-                cur_val = template_builder.pop(agg_key, [])
-                if is_List(cur_val):
-                    new_val += cur_val
-                else:
-                    new_val.append(cur_val)
-                template_builds[agg_key] = new_val
-
-            # Collect all other keys
-            template_builds.update(template_builder)
-
-        if template_builds.get("outputs", []):
-            ninja.build(**template_builds)
+            ninja.build(**template_builder)
 
         # We have to glob the SCons files here to teach the ninja file
         # how to regenerate itself. We'll never see ourselves in the
@@ -1052,12 +1039,11 @@ def gen_get_response_file_command(env, rule, tool, tool_is_dynamic=False, custom
         except ValueError:
             raise Exception(
                 "Could not find tool {} in {} generated from {}".format(
-                    tool, cmd_list, get_comstr(env, action, targets, sources)
+                    tool_command, cmd_list, get_comstr(env, action, targets, sources)
                 )
             )
 
         cmd, rsp_content = cmd_list[:tool_idx], cmd_list[tool_idx:]
-        rsp_content = ['"' + rsp_content_item + '"' for rsp_content_item in rsp_content]
         rsp_content = " ".join(rsp_content)
 
         variables = {"rspc": rsp_content}
@@ -1078,6 +1064,8 @@ def generate_command(env, node, action, targets, sources, executor=None):
     # Actions like CommandAction have a method called process that is
     # used by SCons to generate the cmd_line they need to run. So
     # check if it's a thing like CommandAction and call it if we can.
+    if str(targets[0]) == 'TAGS' or str(targets) == 'TAGS':
+        print([str(s) for s in sources])
     if hasattr(action, "process"):
         cmd_list, _, _ = action.process(targets, sources, env, executor=executor)
         cmd = _string_from_cmd_list(cmd_list[0])
@@ -1101,7 +1089,7 @@ def generate_command(env, node, action, targets, sources, executor=None):
 
 def get_generic_shell_command(env, node, action, targets, sources, executor=None):
     return (
-        "CMD",
+        "GENERATED_CMD",
         {
             "cmd": generate_command(env, node, action, targets, sources, executor=None),
             "env": get_command_env(env),
@@ -1759,6 +1747,9 @@ def generate(env):
 
         if not SCons.Util.is_List(target):
             target = [target]
+
+        if str(target[0]) == 'TAGS' or str(target) == 'TAGS':
+            print([str(s) for s in source])
 
         for target in targets:
             if str(target) != ninja_file_name and "conftest" not in str(target):
