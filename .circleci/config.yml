@@ -31,7 +31,7 @@ jobs:
       - run: python runtest.py --verbose=3 -f .circleci/<< parameters.test >> -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
 workflows:
-  all-tests:
+  all_tests:
     jobs:
       - base_test:
           matrix:
@@ -41,5 +41,5 @@ workflows:
       - machine_test:
           matrix:
             parameters:
-              os: [linux]
+              os: [machine]
               test: ['base_machine_tests.txt']
