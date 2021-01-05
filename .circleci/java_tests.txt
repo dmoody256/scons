@@ -20,3 +20,4 @@ test/Java/swig-dependencies.py
 test/Repository/Java.py
 test/Repository/JavaH.py
 test/Repository/RMIC.py
+SCons/Tool/JavaCommonTests.py

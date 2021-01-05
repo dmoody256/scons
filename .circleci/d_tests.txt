@@ -42,3 +42,4 @@ test/D/Scanner.py
 test/D/SharedObjects/sconstest-dmd.py
 test/D/SharedObjects/sconstest-gdc.py
 test/D/SharedObjects/sconstest-ldc.py
+SCons/Scanner/DTests.py

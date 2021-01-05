@@ -74,3 +74,11 @@ test/gettext/POTUpdate/UserExamples.py
 test/gettext/POUpdate/UserExamples.py
 test/gettext/Translate/MultiCatalog.py
 test/gettext/Translate/UserExamples.py
+test/DVIPDF/DVIPDF.py
+test/DVIPDF/DVIPDFCOM.py
+test/DVIPDF/DVIPDFCOMSTR.py
+test/DVIPDF/DVIPDFFLAGS.py
+test/DVIPS/DVIPSFLAGS.py
+test/DVIPS/PSCOM.py
+test/DVIPS/PSCOMSTR.py
+SCons/Scanner/LaTeXTests.py

@@ -44,3 +44,4 @@ test/MSVS/vs-9.0-exec.py
 test/MSVS/vs-9.0Exp-exec.py
 test/MinGW/MinGWSharedLibrary.py
 test/MinGW/WINDOWS_INSERT_DEF.py
+SCons/Tool/MSCommon/vcTests.py
