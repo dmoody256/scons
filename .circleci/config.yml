@@ -6,4 +6,4 @@ jobs:
     steps:
       - run: python --version
       - checkout
-      - run: python runtest.py -tt -j2 -a
+      - run: python runtest.py -a -t -j 2 || if [[ $? == 2 ]]; then true; else false; fi
