@@ -16,6 +16,21 @@ jobs:
       - run: python --version
       - run: python runtest.py --verbose=3 -f .circleci/<< parameters.test >> -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
+  tex_test:
+    parameters:
+      year:
+        type: string
+      python:
+        type: string
+
+    docker:
+      - image: dmoody256/scons-texalive:texalive-<< parameters.year >>-python<< parameters.python >>
+
+    steps:
+      - checkout
+      - run: python --version
+      - run: python runtest.py --verbose=3 -f .circleci/tex_dockbook_test.txt -j 2 || if [[ $? == 2 ]]; then true; else false; fi
+
 workflows:
   all_tests:
     jobs:
@@ -26,14 +41,18 @@ workflows:
                 'python:3.9',
                 'python:3.8',
                 'python:3.7',
-                'python3.6',
-                'circleci/buildpack-deps:trusty',
-                'circleci/buildpack-deps:xenial',
-                'circleci/buildpack-deps:bionic',
-                'circleci/buildpack-deps:focal',
-                'circleci/buildpack-deps:jessie',
-                'circleci/buildpack-deps:stretch',
-                'circleci/buildpack-deps:buster',
-                'circleci/buildpack-deps:bullseye',
                 ]
               test: ['base_tests.txt']
+      - tex_test:
+          matrix:
+            parameters:
+              python: [
+                '3.9',
+                '3.8',
+                '3.7',
+                ]
+              year: [
+                '2019',
+                '2018',
+                '2017',
+                ]
