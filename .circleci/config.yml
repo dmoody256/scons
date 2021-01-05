@@ -16,14 +16,15 @@ jobs:
       - run: python --version
       - run: python runtest.py --verbose=3 -f .circleci/<< parameters.test >> -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
-  machine_test:
+  linux_machine_test:
     parameters:
       os:
-        type: executor
+        type: string
       test:
         type: string
 
-    executor: << parameters.os >>
+    machine:
+      image: << parameters.os >>
 
     steps:
       - checkout
@@ -38,8 +39,8 @@ workflows:
             parameters:
               image: ['python:3.8', 'python:3.7']
               test: ['base_docker_tests.txt', 'base_tests.txt']
-      - machine_test:
+      - linux_machine_test:
           matrix:
             parameters:
-              os: [machine]
+              os: ['ubuntu-1604:202010-01']
               test: ['base_machine_tests.txt']
