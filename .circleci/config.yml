@@ -16,31 +16,24 @@ jobs:
       - run: python --version
       - run: python runtest.py --verbose=3 -f .circleci/<< parameters.test >> -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
-  linux_machine_test:
-    parameters:
-      os:
-        type: string
-      test:
-        type: string
-
-    machine:
-      image: << parameters.os >>
-
-    steps:
-      - checkout
-      - run: python --version
-      - run: python runtest.py --verbose=3 -f .circleci/<< parameters.test >> -j 2 || if [[ $? == 2 ]]; then true; else false; fi
-
 workflows:
   all_tests:
     jobs:
       - base_test:
           matrix:
             parameters:
-              image: ['python:3.8', 'python:3.7']
-              test: ['base_docker_tests.txt', 'base_tests.txt']
-      - linux_machine_test:
-          matrix:
-            parameters:
-              os: ['ubuntu-1604:202010-01']
-              test: ['base_machine_tests.txt']
+              image: [
+                'python:3.9',
+                'python:3.8',
+                'python:3.7',
+                'python3.6',
+                'circleci/buildpack-deps:trusty',
+                'circleci/buildpack-deps:xenial',
+                'circleci/buildpack-deps:bionic',
+                'circleci/buildpack-deps:focal',
+                'circleci/buildpack-deps:jessie',
+                'circleci/buildpack-deps:stretch',
+                'circleci/buildpack-deps:buster',
+                'circleci/buildpack-deps:bullseye',
+                ]
+              test: ['base_tests.txt']
