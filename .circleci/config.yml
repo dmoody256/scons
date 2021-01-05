@@ -29,7 +29,7 @@ jobs:
     steps:
       - checkout
       - run: python --version
-      - run: python runtest.py --verbose=3 -f .circleci/tex_dockbook_test.txt -j 2 || if [[ $? == 2 ]]; then true; else false; fi
+      - run: python runtest.py --verbose=3 -f .circleci/tex_docbook_tests.txt -j 2 || if [[ $? == 2 ]]; then true; else false; fi
 
 workflows:
   all_tests:
