@@ -728,3 +728,5 @@ test/timestamp-fallback.py
 test/Decider/MD5-winonly-firstbuild.py
 test/Dir/DriveAbsPath.py
 test/Errors/preparation.py
+SCons/Platform/PlatformTests.py
+SCons/Platform/virtualenvTests.py
