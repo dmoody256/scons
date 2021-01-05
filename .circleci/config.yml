@@ -3,8 +3,6 @@ jobs:
   build:
     docker:
       - image: 'python:3.7'
-
-    docker:
       - image: 'python:3.8'
 
     steps:
