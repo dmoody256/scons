@@ -14,11 +14,10 @@ jobs:
     steps:
       - run: python --version
       - checkout
-      - run: python runtest.py -a -j 2 -v -s || if [[ $? == 2 ]]; then true; else false; fi
+      - run: python runtest.py -s --passed -a -j 2 -v || if [[ $? == 2 ]]; then true; else false; fi
 
 workflows:
   version: 2.1
   test_all:
     jobs:
       - test38
-      - test37
