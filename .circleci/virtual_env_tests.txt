@@ -1,0 +1,5 @@
+test/virtualenv/activated/option/enable-virtualenv.py
+test/virtualenv/activated/option/ignore-virtualenv.py
+test/virtualenv/activated/virtualenv_activated_python.py
+test/virtualenv/activated/virtualenv_detect_virtualenv.py
+test/virtualenv/unactivated/virtualenv_unactivated_python.py

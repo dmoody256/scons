@@ -1,0 +1,6 @@
+SCons/CacheDirTests.py
+SCons/Node/FSTests.py
+test/Dir/source.py
+test/Errors/permission-denied.py
+test/Install/Install.py
+test/VariantDir/errors.py

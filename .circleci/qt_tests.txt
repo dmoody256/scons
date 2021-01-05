@@ -1,0 +1,4 @@
+test/QT/Tool.py
+test/QT/generated-ui.py
+test/QT/installed.py
+test/QT/up-to-date.py

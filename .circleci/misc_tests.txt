@@ -1,0 +1,6 @@
+test/AS/ml.py
+test/AS/nasm.py
+test/CPPDEFINES/scan.py
+test/IDL/midl.py
+test/Intel/icpc-link.py
+test/PharLap.py

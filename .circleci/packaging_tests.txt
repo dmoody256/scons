@@ -1,0 +1,13 @@
+test/packaging/ipkg.py
+test/packaging/msi/explicit-target.py
+test/packaging/msi/file-placement.py
+test/packaging/msi/package.py
+test/packaging/multiple-packages-at-once.py
+test/packaging/option--package-type.py
+test/packaging/rpm/cleanup.py
+test/packaging/rpm/explicit-target.py
+test/packaging/rpm/internationalization.py
+test/packaging/rpm/multipackage.py
+test/packaging/rpm/package.py
+test/packaging/rpm/tagging.py
+test/packaging/zip.py

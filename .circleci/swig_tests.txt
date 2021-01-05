@@ -1,0 +1,16 @@
+test/SWIG/SWIGFLAGS.py
+test/SWIG/SWIGOUTDIR-python.py
+test/SWIG/SWIGOUTDIR.py
+test/SWIG/SWIGPATH.py
+test/SWIG/build-dir.py
+test/SWIG/generated_swigfile.py
+test/SWIG/implicit-dependencies.py
+test/SWIG/live.py
+test/SWIG/module-deduced-name.py
+test/SWIG/module-parens.py
+test/SWIG/module-quoted.py
+test/SWIG/module-spaces.py
+test/SWIG/noproxy.py
+test/SWIG/recursive-includes-cpp.py
+test/SWIG/remove-modules.py
+test/SWIG/subdir.py
