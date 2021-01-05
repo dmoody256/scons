@@ -3,9 +3,6 @@ jobs:
   build:
     docker:
       - image: 'dmoody256/scons-test-image:scons-test'
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
     steps:
       - run: python --version
       - checkout
