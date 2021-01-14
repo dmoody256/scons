@@ -1,4 +1,4 @@
-dist: xenial
+sudo: required
 language: python
 
 # Used: travis encrypt "chat.freenode.net#scons" --add notifications.irc
@@ -6,18 +6,12 @@ notifications:
   irc:
     secure: TTb+41Bj1qIUc6vj+kDqBME8H3lqXdAe1RWAjjz5hL7bzFah6qCBHNJn4DwzqYs6+Pwuwp+6wFy8hgmQttJnXve4h6GtjtvlWprDqxaC7RkFqMWFDBzDalgbB54Bi4+TTZmSJ1K/duI3LrDaN873nyn+2GBnj+3TiNtgURp1fsJMpPxXJzAsoC8UthEsbx0Zkoal/WF+IfsT2q1yQRmAwB9r/drbahx/FfL16r1QjDbI9y1fKvN5J3PirLUvxtHfuH1r8zq1vlLew2fvldgVRtFv7+Lsk2waG/eiRpMf94V5JWP1rNreV/i4AUbZaTLb3bkrhtvTjSKhvx69Ydm+ygXdRgWOD/KRgqpLNAfA+t/a2J1R++89svQI4dPBpQjlfua1elcDCFddeIslgnjDUPO23Y0o7tHAy8sWkwhTcZH1Wm42uJP6Z6tHTH6+dMLvvZpkq4RUKUcrXvoUvCsVlWMGjcsBX+AEQSFGDJnLtLehO9x0QbgVga/IRKjgpDWgQDZgro3AkGg/zzVj5uFRUoU+rbmEXq9feh5i3HfExAvA3UoEtnQ6uadDyWqtQcLRFmPSWDU82CO+sanGdFL0jBjigE8ubPObzxEAz3Fg1xk56OYBkAdEd+2KEzeO1nqJmrhsnc3c/3+b1cBvaL5ozW4XB4XcWsOi268SoiBrcBo=
 
+services:
+  - docker
+
 addons:
   apt:
     update: true
-
-os:
-  - linux
-
-install:
-  # needed for Docbook tests, must be in virtualenv context
-  - pip install -r requirements.txt
-  # do the rest of the image setup
-  - ./.travis/install.sh
 
 # Note: Travis does not provide a way to specify the order of
 # jobs within a Stage, which are "run in parallel", but with
@@ -36,10 +30,12 @@ jobs:
   # allow coverage to fail, so we can still do testing for all platforms
   allow_failures:
     - python: pypy3
-    
+
   include:
+
     - &test_job
-      script: python runtest.py -a -t -j 2 || if [[ $? == 2 ]]; then true; else false; fi
+      dist: xenial
+      script: python runtest.py -a -t -j 2 -f .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
       python: pypy3
@@ -49,47 +45,56 @@ jobs:
 
     - <<: *test_job
       python: 3.6
-      
+
     - <<: *test_job
       python: 3.7
-      dist: xenial  # required for Python >= 3.7
 
     - <<: *test_job
       python: 3.8
       dist: bionic  # required for Python >= 3.8
 
     - <<: *test_job
-      python: 3.9-dev
-      dist: bionic  # required for Python >= 3.8
+      python: 3.9
+      dist: focal  # required for Python >= 3.8
 
-    - &coverage_jobs
-      dist: bionic
-      python: 3.7
-      name: coverage
-      before_script:
-        - ./.travis/coverage_setup.sh
-
+    - &docker_job
+      name: Docker - Python3.9 Ubuntu 20.04
+      python: 3.9
+      before_install:
+        - docker pull dmoody256/scons_test_image:ubuntu20
+        - docker run -it -d --name build -e PYCOVERAGE=1 -v $PWD:/scons dmoody256/scons_test_image:ubuntu20 bash
       script:
-        - coverage run -p --rcfile="$PWD/.coveragerc" runtest.py -a -j 2 || if [[ $? == 2 ]]; then true; else false; fi
+        - sed -e "s#\$PWD#/scons#" .coverage_templates/.coveragerc.template > .coveragerc
+        - docker exec build default_python -m virtualenv venv
+        - docker exec build /venv/bin/python -m pip install coverage codecov
+        - docker exec -w /scons build /venv/bin/python -m coverage run -p --rcfile=/scons/.coveragerc runtest.py -t test/virtualenv/unactivated/virtualenv_unactivated_python.py
+        - docker exec -w /scons build bash -c "source /venv/bin/activate && /venv/bin/python -m coverage run -p --rcfile=/scons/.coveragerc runtest.py -t -j 2 -f .travis/virtual_env_tests.txt"
+        - docker exec -w /scons build default_python -m coverage run -p --rcfile=/scons/.coveragerc runtest.py -a -t -j 2 --exclude-list .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
+        - docker exec -w /scons build coverage combine
+        - docker exec -w /scons build coverage report -i
+        - docker exec -w /scons build coverage xml -i -o coverage_xml.xml
+        - docker exec -w /scons build codecov -X gcov --file coverage_xml.xml
 
-      after_script:
-        - coverage combine
-        - coverage report
-        - coverage xml -i -o coverage_xml.xml
-        - codecov -X gcov --file coverage_xml.xml
+    - <<: *docker_job
+      python: 3.8
+      name: Docker - Python3.8 Ubuntu 18.04
+      before_install:
+        - docker pull dmoody256/scons_test_image:ubuntu18
+        - docker run -it -d --name build -e PYCOVERAGE=1 -v $PWD:/scons dmoody256/scons_test_image:ubuntu18 bash
 
-    - &scons_build_job
-      name: SCons Build
+    - <<: *docker_job
       python: 3.7
-      install:
-        - sudo apt-get -y install docbook-xml docbook-xsl xsltproc libxml2-dev libxslt-dev fop docbook-xsl-doc-pdf
-        - sudo apt-get -y --no-install-recommends install texlive texlive-latex3 biber texmaker ghostscript texlive-bibtex-extra texlive-latex-extra texlive-font-utils latexmk
-        - pip install -r requirements.txt
-      script:
-        - python bin/docs-update-generated.py
-        - python bin/docs-validate.py
-        - python bin/docs-create-example-outputs.py
-        - python scripts/scons.py
-        - ls -l build/dist
-        - python build/scons-local/scons.py --version
-        - ./.travis/verify_packages.sh
+      name: Docker - Python3.7 Ubuntu 16.04
+      before_install:
+        - docker pull dmoody256/scons_test_image:ubuntu16
+        - docker run -it -d --name build -e PYCOVERAGE=1 -v $PWD:/scons dmoody256/scons_test_image:ubuntu16 bash
+
+    - <<: *docker_job
+      python: 3.6
+      name: Docker - Python3.6 Ubuntu 14.04
+      before_install:
+        - docker pull dmoody256/scons_test_image:ubuntu14
+        - docker run -it -d --name build -e PYCOVERAGE=1 -v $PWD:/scons dmoody256/scons_test_image:ubuntu14 bash
+
+
+

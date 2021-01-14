@@ -77,6 +77,8 @@ int main(int argc, char** argv) {
 
 test.write('test.c', source_content % '0')
 
+test.run(stderr=None)
+test.run('-c')
 test.run()
 
 pdf_output_1 = test.read('test.pdf')
