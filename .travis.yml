@@ -81,7 +81,8 @@ jobs:
         - docker exec -w /scons build coverage combine
         - docker exec -w /scons build coverage report -i
         - docker exec -w /scons build coverage xml -i -o coverage_xml.xml
-        - docker exec -w /scons build codecov -X gcov --file coverage_xml.xml
+        - python -m pip install codecov
+        - codecov -X gcov --file coverage_xml.xml
 
     - <<: *docker_job
       python: 3.8
