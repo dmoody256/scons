@@ -35,7 +35,7 @@ jobs:
 
     - &test_job
       dist: xenial
-      script: python runtest.py -a -t -j 2 -f .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
+      script: python runtest.py -t -j 2 -f .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
       before_script: skip
       after_success: skip
       python: pypy3
