@@ -35,9 +35,17 @@ jobs:
 
     - &test_job
       dist: xenial
-      script: python runtest.py -t -j 2 -f .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
-      before_script: skip
-      after_success: skip
+      before_script:
+        - ./.travis/coverage_setup.sh
+
+      script:
+        - coverage run -p --rcfile="$PWD/.coveragerc" runtest.py -j 2 -f .travis/non_docker_tests.txt || if [[ $? == 2 ]]; then true; else false; fi
+
+      after_script:
+        - coverage combine
+        - coverage report -i
+        - coverage xml -i -o coverage_xml.xml
+        - codecov -X gcov --file coverage_xml.xml
       python: pypy3
 
     - <<: *test_job
